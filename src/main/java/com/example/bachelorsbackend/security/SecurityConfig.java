@@ -19,7 +19,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic().disable();
-        http.authorizeHttpRequests()
+        http.cors()
+                .and().authorizeHttpRequests()
                 .anyRequest()
                 .authenticated()
                 .and()

@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 public class Problem {
     @Id
+    @GeneratedValue
     private int id;
 
     private String problemTitle;

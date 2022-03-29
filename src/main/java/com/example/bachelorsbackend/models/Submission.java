@@ -9,6 +9,7 @@ import java.util.Date;
 @Data
 public class Submission {
     @Id
+    @GeneratedValue
     private int id;
 
     @ManyToOne

@@ -2,16 +2,14 @@ package com.example.bachelorsbackend.models;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Data
 public class UserList {
     @Id
+    @GeneratedValue
     private int id;
 
     private String listTitle;

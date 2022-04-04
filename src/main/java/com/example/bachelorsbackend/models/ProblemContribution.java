@@ -1,11 +1,15 @@
 package com.example.bachelorsbackend.models;
 
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="PROBLEM_CONTRIBUTION")
+@EntityListeners(AuditingEntityListener.class)
 @Data
 public class ProblemContribution {
     @Id
@@ -17,6 +21,7 @@ public class ProblemContribution {
 
     private String title;
 
+    @Lob
     private String description;
 
     private String solution;
@@ -26,4 +31,7 @@ public class ProblemContribution {
     private String status;
 
     private String statusDetails;
+
+    @CreatedDate
+    private LocalDateTime createdTime;
 }

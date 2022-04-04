@@ -2,7 +2,7 @@ package com.example.bachelorsbackend.security;
 
 import com.example.bachelorsbackend.models.User;
 import com.example.bachelorsbackend.models.UserRole;
-import com.example.bachelorsbackend.repositories.UserRepository;
+import com.example.bachelorsbackend.repositories.IUserRepository;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -15,9 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class AuthenticationProcessorFilter extends OncePerRequestFilter {
-    private final UserRepository userRepository;
+    private final IUserRepository userRepository;
 
-    public AuthenticationProcessorFilter(UserRepository userRepository) {
+    public AuthenticationProcessorFilter(IUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

@@ -1,6 +1,6 @@
 package com.example.bachelorsbackend.security;
 
-import com.example.bachelorsbackend.repositories.UserRepository;
+import com.example.bachelorsbackend.repositories.IUserRepository;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -10,9 +10,9 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthen
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private UserRepository userRepository;
+    private IUserRepository userRepository;
 
-    SecurityConfig(UserRepository userRepository) {
+    SecurityConfig(IUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

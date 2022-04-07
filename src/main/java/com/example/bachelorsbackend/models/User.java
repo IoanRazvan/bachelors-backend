@@ -1,6 +1,7 @@
 package com.example.bachelorsbackend.models;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
@@ -20,4 +21,13 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        final User otherUser = (User) o;
+        return otherUser.getId() == getId();
+    }
 }

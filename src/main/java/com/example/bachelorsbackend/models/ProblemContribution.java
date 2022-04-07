@@ -28,7 +28,8 @@ public class ProblemContribution {
 
     private String testcase;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ProblemContributionStatus status;
 
     private String statusDetails;
 

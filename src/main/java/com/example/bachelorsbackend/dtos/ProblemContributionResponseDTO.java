@@ -2,7 +2,11 @@ package com.example.bachelorsbackend.dtos;
 
 
 import com.example.bachelorsbackend.models.ProblemContributionStatus;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class ProblemContributionResponseDTO extends ProblemContributionRequestDTO {
     public int id;
 

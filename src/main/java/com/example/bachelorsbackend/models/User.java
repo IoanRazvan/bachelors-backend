@@ -1,7 +1,6 @@
 package com.example.bachelorsbackend.models;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 

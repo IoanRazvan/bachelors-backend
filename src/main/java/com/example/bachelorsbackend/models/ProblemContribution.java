@@ -1,6 +1,7 @@
 package com.example.bachelorsbackend.models;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Table(name="PROBLEM_CONTRIBUTION")
 @EntityListeners(AuditingEntityListener.class)
 @Data
+@NoArgsConstructor
 public class ProblemContribution {
     @Id
     @GeneratedValue
@@ -35,4 +37,16 @@ public class ProblemContribution {
 
     @CreatedDate
     private LocalDateTime createdTime;
+
+    public ProblemContribution(ProblemContribution p) {
+        id = p.id;
+        contributor = p.contributor;
+        title = p.title;
+        description = p.description;
+        solution = p.solution;
+        testcase = p.testcase;
+        status = p.status;
+        statusDetails = p.statusDetails;
+        createdTime = p.createdTime;
+    }
 }

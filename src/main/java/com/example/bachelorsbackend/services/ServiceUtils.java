@@ -1,6 +1,7 @@
 package com.example.bachelorsbackend.services;
 
 import com.example.bachelorsbackend.models.User;
+import com.example.bachelorsbackend.security.UserJwtAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class ServiceUtils {
@@ -11,6 +12,14 @@ public class ServiceUtils {
         try {
             return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
+    static UserJwtAuthenticationToken getAuthentication() {
+        try {
+            return (UserJwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        } catch (NullPointerException ex) {
             return null;
         }
     }

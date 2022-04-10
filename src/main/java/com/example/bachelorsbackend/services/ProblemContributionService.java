@@ -5,6 +5,7 @@ import com.example.bachelorsbackend.models.ProblemContributionStatus;
 import com.example.bachelorsbackend.models.User;
 import com.example.bachelorsbackend.models.UserRole;
 import com.example.bachelorsbackend.repositories.IProblemContributionRepository;
+import com.example.bachelorsbackend.security.UserJwtAuthenticationToken;
 import com.example.bachelorsbackend.services.exceptions.AccessDeniedException;
 import com.example.bachelorsbackend.services.exceptions.InvalidOperationException;
 import com.example.bachelorsbackend.services.exceptions.ResourceNotFoundException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.example.bachelorsbackend.services.ServiceUtils.getAuthentication;
 import static com.example.bachelorsbackend.services.ServiceUtils.getLoggedInUser;
 
 @Service
@@ -47,8 +49,8 @@ public class ProblemContributionService implements IProblemContributionService {
         if (oldContribution.getStatus() != ProblemContributionStatus.PENDING)
             throw new InvalidOperationException(UPDATE_NON_PENDING_CONTRIBUTION_ERROR);
 
-        User user = getLoggedInUser();
-        if (user.getRole() == UserRole.ROLE_DEVELOPER)
+        UserJwtAuthenticationToken authentication = getAuthentication();
+        if (authentication.getAuthorities().contains(UserRole.ROLE_DEVELOPER))
             checkUpdateByDeveloper(oldContribution, newContribution);
         else
             checkUpdateByNormalUser(oldContribution, newContribution);
@@ -70,15 +72,16 @@ public class ProblemContributionService implements IProblemContributionService {
     @Override
     public Slice<ProblemContribution> findByLoggedInUser(int page, int size) {
         User contributor = getLoggedInUser();
-        return repo.findByContributorId(PageRequest.of(page, size, Sort.Direction.DESC, "createdTime"), contributor.getId());
+        return repo.findByContributor(PageRequest.of(page, size, Sort.Direction.DESC, "createdTime"), contributor);
     }
 
     @Override
     public Optional<ProblemContribution> findById(int id) {
         Optional<ProblemContribution> contributionOpt = repo.findById(id);
         contributionOpt.ifPresent(contribution -> {
-            User user = getLoggedInUser();
-            if (!contribution.getContributor().equals(user) && user.getRole() != UserRole.ROLE_DEVELOPER)
+            UserJwtAuthenticationToken authentication = getAuthentication();
+            User user = authentication.getPrincipal();
+            if (!contribution.getContributor().equals(user) && !authentication.getAuthorities().contains(UserRole.ROLE_DEVELOPER))
                 throw new AccessDeniedException();
         });
         return contributionOpt;

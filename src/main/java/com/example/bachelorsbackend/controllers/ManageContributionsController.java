@@ -1,0 +1,37 @@
+package com.example.bachelorsbackend.controllers;
+
+import com.example.bachelorsbackend.dtos.Page;
+import com.example.bachelorsbackend.dtos.ProblemContributionResponseDTO;
+import com.example.bachelorsbackend.mappers.ProblemContributionMapper;
+import com.example.bachelorsbackend.models.ProblemContribution;
+import com.example.bachelorsbackend.services.IProblemContributionService;
+import org.springframework.data.domain.Slice;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.ResponseEntity.ok;
+
+@RestController
+@RequestMapping("api/manage-contributions")
+@Secured("ROLE_DEVELOPER")
+public class ManageContributionsController {
+    IProblemContributionService service;
+    ProblemContributionMapper mapper;
+
+    public ManageContributionsController(IProblemContributionService service, ProblemContributionMapper mapper) {
+        this.service = service;
+        this.mapper = mapper;
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<ProblemContributionResponseDTO>> getNonAssignedPendingContributions(@RequestParam int page, @RequestParam int size) {
+        Slice<ProblemContribution> resultPage = service.findAvailableContributions(page, size);
+        return ok(Page.of(resultPage, mapper::entityToDTO));
+    }
+
+    @PutMapping("{id}")
+    public void assignContribution(@PathVariable int id) {
+        this.service.assignContribution(id);
+    }
+}

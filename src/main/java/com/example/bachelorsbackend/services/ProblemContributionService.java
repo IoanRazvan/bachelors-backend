@@ -3,13 +3,13 @@ package com.example.bachelorsbackend.services;
 import com.example.bachelorsbackend.models.ProblemContribution;
 import com.example.bachelorsbackend.models.ProblemContributionStatus;
 import com.example.bachelorsbackend.models.User;
-import com.example.bachelorsbackend.models.UserRole;
 import com.example.bachelorsbackend.repositories.IProblemContributionRepository;
 import com.example.bachelorsbackend.security.UserJwtAuthenticationToken;
 import com.example.bachelorsbackend.services.exceptions.AccessDeniedException;
 import com.example.bachelorsbackend.services.exceptions.InvalidOperationException;
 import com.example.bachelorsbackend.services.exceptions.ResourceNotFoundException;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.hibernate.StaleStateException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -17,8 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.example.bachelorsbackend.services.ServiceUtils.getAuthentication;
-import static com.example.bachelorsbackend.services.ServiceUtils.getLoggedInUser;
+import static com.example.bachelorsbackend.services.ServiceUtils.*;
 
 @Service
 public class ProblemContributionService implements IProblemContributionService {
@@ -27,7 +26,7 @@ public class ProblemContributionService implements IProblemContributionService {
     public static final String UPDATE_NON_PENDING_CONTRIBUTION_ERROR = "Only pending contributions can be updated";
     public static final String UPDATE_READONLY_FIELD_ERROR = "Tried to update read only field";
     public static final String DELETE_NON_PENDING_CONTRIBUTION_ERROR = "Only pending contributions can be deleted";
-
+    public static final String UPDATE_CONTRIBUTION_ASSIGNED_TO = "Contributions cannot be reassigned";
 
 
     public ProblemContributionService(IProblemContributionRepository repo) {
@@ -50,10 +49,13 @@ public class ProblemContributionService implements IProblemContributionService {
             throw new InvalidOperationException(UPDATE_NON_PENDING_CONTRIBUTION_ERROR);
 
         UserJwtAuthenticationToken authentication = getAuthentication();
-        if (authentication.getAuthorities().contains(UserRole.ROLE_DEVELOPER))
+        User user = getLoggedInUser();
+        if (oldContribution.getContributor().equals(user))
+            checkUpdateByOwner(oldContribution, newContribution);
+        else if (hasDeveloperRole(authentication) && (oldContribution.getAssignedTo() == null || oldContribution.getAssignedTo().equals(user)))
             checkUpdateByDeveloper(oldContribution, newContribution);
         else
-            checkUpdateByNormalUser(oldContribution, newContribution);
+            throw new AccessDeniedException();
         return repo.save(newContribution);
     }
 
@@ -63,7 +65,7 @@ public class ProblemContributionService implements IProblemContributionService {
             throw new InvalidOperationException(UPDATE_READONLY_FIELD_ERROR);
     }
 
-    private void checkUpdateByNormalUser(ProblemContribution oldContribution, ProblemContribution newContribution) {
+    private void checkUpdateByOwner(ProblemContribution oldContribution, ProblemContribution newContribution) {
         boolean equals = EqualsBuilder.reflectionEquals(oldContribution, newContribution, "title", "description", "solution", "testcase");
         if (!equals)
             throw new InvalidOperationException(UPDATE_READONLY_FIELD_ERROR);
@@ -81,7 +83,7 @@ public class ProblemContributionService implements IProblemContributionService {
         contributionOpt.ifPresent(contribution -> {
             UserJwtAuthenticationToken authentication = getAuthentication();
             User user = authentication.getPrincipal();
-            if (!contribution.getContributor().equals(user) && !authentication.getAuthorities().contains(UserRole.ROLE_DEVELOPER))
+            if (!contribution.getContributor().equals(user) && !hasDeveloperRole(authentication))
                 throw new AccessDeniedException();
         });
         return contributionOpt;
@@ -97,8 +99,39 @@ public class ProblemContributionService implements IProblemContributionService {
             if (contribution.getStatus() != ProblemContributionStatus.PENDING)
                 throw new InvalidOperationException(DELETE_NON_PENDING_CONTRIBUTION_ERROR);
             this.repo.delete(contribution);
-        }, () -> {
-            throw new ResourceNotFoundException();
-        });
+        }, ResourceNotFoundException::new);
+    }
+
+    @Override
+    public Slice<ProblemContribution> findAvailableContributions(int page, int size) {
+        User u = getLoggedInUser();
+        UserJwtAuthenticationToken authentication = getAuthentication();
+        if (!hasDeveloperRole(authentication))
+            throw new AccessDeniedException();
+        return repo.findAvailableContributions(PageRequest.of(page, size), u);
+    }
+
+    @Override
+    public void assignContribution(int contributionId) {
+        User u = getLoggedInUser();
+        UserJwtAuthenticationToken authentication = getAuthentication();
+        if (!hasDeveloperRole(authentication))
+            throw new AccessDeniedException();
+        Optional<ProblemContribution> contributionOptional = repo.findById(contributionId);
+        contributionOptional.ifPresentOrElse((contribution) -> {
+            if (contribution.getAssignedTo() == null)
+                assignContributionHelper(contribution, u);
+            else
+                throw new InvalidOperationException(UPDATE_CONTRIBUTION_ASSIGNED_TO);
+        }, ResourceNotFoundException::new);
+    }
+
+    private void assignContributionHelper(ProblemContribution contribution, User assignedTo) {
+        contribution.setAssignedTo(assignedTo);
+        try {
+            repo.save(contribution);
+        } catch (StaleStateException ex) {
+            throw new InvalidOperationException(UPDATE_CONTRIBUTION_ASSIGNED_TO);
+        }
     }
 }

@@ -26,6 +26,7 @@ public class ProblemContribution {
     @Lob
     private String description;
 
+    @Lob
     private String solution;
 
     private String testcase;
@@ -38,6 +39,12 @@ public class ProblemContribution {
     @CreatedDate
     private LocalDateTime createdTime;
 
+    @ManyToOne
+    private User assignedTo;
+
+    @Version
+    private long version;
+
     public ProblemContribution(ProblemContribution p) {
         id = p.id;
         contributor = p.contributor;
@@ -48,5 +55,7 @@ public class ProblemContribution {
         status = p.status;
         statusDetails = p.statusDetails;
         createdTime = p.createdTime;
+        version = p.version;
+        assignedTo = p.assignedTo;
     }
 }

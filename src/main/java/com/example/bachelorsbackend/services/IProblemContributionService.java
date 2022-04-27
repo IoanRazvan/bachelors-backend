@@ -15,4 +15,8 @@ public interface IProblemContributionService {
     Optional<ProblemContribution> findById(int id);
 
     void deleteById(int id);
+
+    Slice<ProblemContribution> findAvailableContributions(int page, int size);
+
+    void assignContribution(int contributionId);
 }

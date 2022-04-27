@@ -1,6 +1,7 @@
 package com.example.bachelorsbackend.services;
 
 import com.example.bachelorsbackend.models.User;
+import com.example.bachelorsbackend.models.UserRole;
 import com.example.bachelorsbackend.security.UserJwtAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -22,5 +23,9 @@ public class ServiceUtils {
         } catch (NullPointerException ex) {
             return null;
         }
+    }
+
+    static boolean hasDeveloperRole(UserJwtAuthenticationToken authenticationToken) {
+        return authenticationToken.getAuthorities().contains(UserRole.ROLE_DEVELOPER);
     }
 }

@@ -27,6 +27,7 @@ public class ProblemContributionService implements IProblemContributionService {
     public static final String UPDATE_READONLY_FIELD_ERROR = "Tried to update read only field";
     public static final String DELETE_NON_PENDING_CONTRIBUTION_ERROR = "Only pending contributions can be deleted";
     public static final String UPDATE_CONTRIBUTION_ASSIGNED_TO = "Contributions cannot be reassigned";
+    public static final String UPDATE_NON_ASSIGNED_CONTRIBUTION = "Only assigned contributions can be refused";
 
 
     public ProblemContributionService(IProblemContributionRepository repo) {
@@ -133,5 +134,23 @@ public class ProblemContributionService implements IProblemContributionService {
         } catch (StaleStateException ex) {
             throw new InvalidOperationException(UPDATE_CONTRIBUTION_ASSIGNED_TO);
         }
+    }
+
+    @Override
+    public void refuseContribution(int contributionId, String statusDetails) {
+        User u = getLoggedInUser();
+        UserJwtAuthenticationToken authentication = getAuthentication();
+        if (!hasDeveloperRole(authentication))
+            throw new AccessDeniedException();
+        Optional<ProblemContribution> contributionOptional = repo.findById(contributionId);
+        contributionOptional.ifPresentOrElse((contribution) -> {
+            if (contribution.getAssignedTo() == null || !contribution.getAssignedTo().equals(u))
+                throw new InvalidOperationException(UPDATE_NON_ASSIGNED_CONTRIBUTION);
+            else if (contribution.getStatus() != ProblemContributionStatus.PENDING)
+                throw new InvalidOperationException(UPDATE_NON_PENDING_CONTRIBUTION_ERROR);
+            contribution.setStatus(ProblemContributionStatus.REJECTED);
+            contribution.setStatusDetails(statusDetails);
+            repo.save(contribution);
+        }, ResourceNotFoundException::new);
     }
 }

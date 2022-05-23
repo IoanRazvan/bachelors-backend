@@ -19,4 +19,6 @@ public interface IProblemContributionService {
     Slice<ProblemContribution> findUnassignedContributions(int page, int size);
 
     void assignContribution(int contributionId);
+
+    void refuseContribution(int contributionId, String statusDetails);
 }

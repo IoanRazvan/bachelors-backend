@@ -1,5 +1,6 @@
 package com.example.bachelorsbackend.controllers;
 
+import com.example.bachelorsbackend.dtos.ContributionRefusalDTO;
 import com.example.bachelorsbackend.dtos.Page;
 import com.example.bachelorsbackend.dtos.UnassignedContributionRowDTO;
 import com.example.bachelorsbackend.mappers.ProblemContributionMapper;
@@ -33,5 +34,10 @@ public class ManageContributionsController {
     @PutMapping("{id}")
     public void assignContribution(@PathVariable int id) {
         this.service.assignContribution(id);
+    }
+
+    @PutMapping("/refuse/{id}")
+    public void refuseContribution(@PathVariable int id, @RequestBody ContributionRefusalDTO dto) {
+        this.service.refuseContribution(id, dto.getStatusDetails());
     }
 }

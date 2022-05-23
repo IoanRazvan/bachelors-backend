@@ -103,12 +103,12 @@ public class ProblemContributionService implements IProblemContributionService {
     }
 
     @Override
-    public Slice<ProblemContribution> findAvailableContributions(int page, int size) {
+    public Slice<ProblemContribution> findUnassignedContributions(int page, int size) {
         User u = getLoggedInUser();
         UserJwtAuthenticationToken authentication = getAuthentication();
         if (!hasDeveloperRole(authentication))
             throw new AccessDeniedException();
-        return repo.findAvailableContributions(PageRequest.of(page, size), u);
+        return repo.findUnassignedContributions(PageRequest.of(page, size), u);
     }
 
     @Override

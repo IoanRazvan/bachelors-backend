@@ -10,5 +10,5 @@ import org.springframework.data.repository.CrudRepository;
 public interface IProblemContributionRepository extends CrudRepository<ProblemContribution, Integer> {
     Slice<ProblemContribution> findByContributor(Pageable pageable, User contributor);
     @Query("select pc from ProblemContribution pc where pc.contributor <> ?1 and pc.status = 'PENDING' and pc.assignedTo is null")
-    Slice<ProblemContribution> findAvailableContributions(Pageable pageable, User contributor);
+    Slice<ProblemContribution> findUnassignedContributions(Pageable pageable, User contributor);
 }

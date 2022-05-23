@@ -16,7 +16,7 @@ public interface IProblemContributionService {
 
     void deleteById(int id);
 
-    Slice<ProblemContribution> findAvailableContributions(int page, int size);
+    Slice<ProblemContribution> findUnassignedContributions(int page, int size);
 
     void assignContribution(int contributionId);
 }

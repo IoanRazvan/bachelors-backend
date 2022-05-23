@@ -1,11 +1,12 @@
 package com.example.bachelorsbackend.mappers;
 
+import com.example.bachelorsbackend.dtos.PreviousContributionRowDTO;
 import com.example.bachelorsbackend.dtos.ProblemContributionRequestDTO;
 import com.example.bachelorsbackend.dtos.ProblemContributionResponseDTO;
+import com.example.bachelorsbackend.dtos.UnassignedContributionRowDTO;
 import com.example.bachelorsbackend.models.ProblemContribution;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,4 +27,9 @@ public abstract class ProblemContributionMapper {
     protected String map(LocalDateTime createdTime) {
         return createdTime.format(formatter);
     }
+
+    public abstract PreviousContributionRowDTO entityToPreviousContributionRow(ProblemContribution entity);
+
+    @Mapping(target="contributorUsername", expression = "java(entity.getContributor().getUsername())")
+    public abstract UnassignedContributionRowDTO entityToUnassignedContributionRow(ProblemContribution entity);
 }

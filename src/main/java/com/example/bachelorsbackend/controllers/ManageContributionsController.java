@@ -1,7 +1,7 @@
 package com.example.bachelorsbackend.controllers;
 
 import com.example.bachelorsbackend.dtos.Page;
-import com.example.bachelorsbackend.dtos.ProblemContributionResponseDTO;
+import com.example.bachelorsbackend.dtos.UnassignedContributionRowDTO;
 import com.example.bachelorsbackend.mappers.ProblemContributionMapper;
 import com.example.bachelorsbackend.models.ProblemContribution;
 import com.example.bachelorsbackend.services.IProblemContributionService;
@@ -25,9 +25,9 @@ public class ManageContributionsController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProblemContributionResponseDTO>> getNonAssignedPendingContributions(@RequestParam int page, @RequestParam int size) {
-        Slice<ProblemContribution> resultPage = service.findAvailableContributions(page, size);
-        return ok(Page.of(resultPage, mapper::entityToDTO));
+    public ResponseEntity<Page<UnassignedContributionRowDTO>> getUnassignedPendingContributions(@RequestParam int page, @RequestParam int size) {
+        Slice<ProblemContribution> resultPage = service.findUnassignedContributions(page, size);
+        return ok(Page.of(resultPage, mapper::entityToUnassignedContributionRow));
     }
 
     @PutMapping("{id}")

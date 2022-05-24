@@ -26,7 +26,7 @@ public class ManageContributionsController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<UnassignedContributionRowDTO>> getUnassignedPendingContributions(@RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<Page<UnassignedContributionRowDTO>> getUnassignedContributions(@RequestParam int page, @RequestParam int size) {
         Slice<ProblemContribution> resultPage = service.findUnassignedContributions(page, size);
         return ok(Page.of(resultPage, mapper::entityToUnassignedContributionRow));
     }

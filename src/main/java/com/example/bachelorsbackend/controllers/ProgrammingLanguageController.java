@@ -1,4 +1,4 @@
-package com.example.bachelorsbackend.controllers.handlers;
+package com.example.bachelorsbackend.controllers;
 
 import com.example.bachelorsbackend.models.ProgrammingLanguage;
 import com.example.bachelorsbackend.services.IProgrammingLanguageService;

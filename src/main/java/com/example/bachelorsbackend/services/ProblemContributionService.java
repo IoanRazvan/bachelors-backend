@@ -27,7 +27,7 @@ public class ProblemContributionService implements IProblemContributionService {
     public static final String UPDATE_READONLY_FIELD_ERROR = "Tried to update read only field";
     public static final String DELETE_NON_PENDING_CONTRIBUTION_ERROR = "Only pending contributions can be deleted";
     public static final String UPDATE_CONTRIBUTION_ASSIGNED_TO = "Contributions cannot be reassigned";
-    public static final String UPDATE_NON_ASSIGNED_CONTRIBUTION = "Only assigned contributions can be refused";
+    public static final String UPDATE_NON_ASSIGNED_CONTRIBUTION = "Only assigned contributions can be rejected";
 
 
     public ProblemContributionService(IProblemContributionRepository repo) {
@@ -83,7 +83,7 @@ public class ProblemContributionService implements IProblemContributionService {
         Optional<ProblemContribution> contributionOpt = repo.findById(id);
         contributionOpt.ifPresent(contribution -> {
             UserJwtAuthenticationToken authentication = getAuthentication();
-            User user = authentication.getPrincipal();
+            User user = getLoggedInUser();
             if (!contribution.getContributor().equals(user) && !hasDeveloperRole(authentication))
                 throw new AccessDeniedException();
         });
@@ -137,7 +137,7 @@ public class ProblemContributionService implements IProblemContributionService {
     }
 
     @Override
-    public void refuseContribution(int contributionId, String statusDetails) {
+    public void rejectContribution(int contributionId, String statusDetails) {
         User u = getLoggedInUser();
         UserJwtAuthenticationToken authentication = getAuthentication();
         if (!hasDeveloperRole(authentication))

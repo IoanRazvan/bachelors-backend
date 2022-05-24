@@ -26,6 +26,8 @@ public class ServiceUtils {
     }
 
     static boolean hasDeveloperRole(UserJwtAuthenticationToken authenticationToken) {
+        if (authenticationToken == null)
+            return false;
         return authenticationToken.getAuthorities().contains(UserRole.ROLE_DEVELOPER);
     }
 }

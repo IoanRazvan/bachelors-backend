@@ -20,5 +20,5 @@ public interface IProblemContributionService {
 
     void assignContribution(int contributionId);
 
-    void refuseContribution(int contributionId, String statusDetails);
+    void rejectContribution(int contributionId, String statusDetails);
 }

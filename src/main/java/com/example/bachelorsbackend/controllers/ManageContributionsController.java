@@ -25,19 +25,19 @@ public class ManageContributionsController {
         this.mapper = mapper;
     }
 
-    @GetMapping
+    @GetMapping("/unassigned")
     public ResponseEntity<Page<UnassignedContributionRowDTO>> getUnassignedContributions(@RequestParam int page, @RequestParam int size) {
         Slice<ProblemContribution> resultPage = service.findUnassignedContributions(page, size);
         return ok(Page.of(resultPage, mapper::entityToUnassignedContributionRow));
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/assign/{id}")
     public void assignContribution(@PathVariable int id) {
         this.service.assignContribution(id);
     }
 
-    @PutMapping("/refuse/{id}")
-    public void refuseContribution(@PathVariable int id, @RequestBody ContributionRefusalDTO dto) {
-        this.service.refuseContribution(id, dto.getStatusDetails());
+    @PutMapping("/reject/{id}")
+    public void rejectContribution(@PathVariable int id, @RequestBody ContributionRefusalDTO dto) {
+        this.service.rejectContribution(id, dto.getStatusDetails());
     }
 }

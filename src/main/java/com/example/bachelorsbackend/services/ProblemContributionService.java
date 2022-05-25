@@ -1,5 +1,6 @@
 package com.example.bachelorsbackend.services;
 
+import com.example.bachelorsbackend.dtos.AssignedContributionStatusCount;
 import com.example.bachelorsbackend.models.ProblemContribution;
 import com.example.bachelorsbackend.models.ProblemContributionStatus;
 import com.example.bachelorsbackend.models.User;
@@ -15,7 +16,9 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.bachelorsbackend.services.ServiceUtils.*;
 
@@ -104,13 +107,38 @@ public class ProblemContributionService implements IProblemContributionService {
     }
 
     @Override
-    public Slice<ProblemContribution> findUnassignedContributions(int page, int size) {
-        User u = getLoggedInUser();
+    public Slice<ProblemContribution> findUnassignedContributions(int page, int size, String q, String order) {
+        User user = getLoggedInUser();
         UserJwtAuthenticationToken authentication = getAuthentication();
         if (!hasDeveloperRole(authentication))
             throw new AccessDeniedException();
-        return repo.findUnassignedContributions(PageRequest.of(page, size), u);
+        Sort.Direction sortingDirection = convertStringToOrderDirection(order);
+        return repo.findUnassignedContributions(PageRequest.of(page, size, Sort.by(sortingDirection, "createdTime")), user, q);
     }
+
+    private Sort.Direction convertStringToOrderDirection(String order) {
+        if (order.equals("ascending"))
+            return Sort.Direction.ASC;
+        return Sort.Direction.DESC;
+    }
+
+    @Override
+    public Slice<ProblemContribution> findAssignedContributions(int page, int size, String q, String order, String status) {
+        User user = getLoggedInUser();
+        UserJwtAuthenticationToken authentication = getAuthentication();
+        if (!hasDeveloperRole(authentication))
+            throw new AccessDeniedException();
+        List<ProblemContributionStatus> statuses = convertStringToProblemContributionStatusList(status);
+        Sort.Direction sortingDirection = convertStringToOrderDirection(order);
+        return repo.findAssignedContributions(PageRequest.of(page, size, Sort.by(sortingDirection, "createdTime")), user, statuses, q);
+    }
+
+    private List<ProblemContributionStatus> convertStringToProblemContributionStatusList(String status) {
+        if (status.equals(""))
+            return List.of(ProblemContributionStatus.PENDING, ProblemContributionStatus.REJECTED, ProblemContributionStatus.ACCEPTED);
+        return List.of(ProblemContributionStatus.valueOf(status));
+    }
+
 
     @Override
     public void assignContribution(int contributionId) {
@@ -152,5 +180,29 @@ public class ProblemContributionService implements IProblemContributionService {
             contribution.setStatusDetails(statusDetails);
             repo.save(contribution);
         }, ResourceNotFoundException::new);
+    }
+
+    @Override
+    public List<AssignedContributionStatusCount> findDeveloperStatistics() {
+        User developer = getLoggedInUser();
+        UserJwtAuthenticationToken authentication = getAuthentication();
+        if (!hasDeveloperRole(authentication))
+            throw new AccessDeniedException();
+        List<Object[]> statistics = repo.findDeveloperStatistics(developer);
+        return convertToStatusCountList(statistics);
+    }
+
+    private List<AssignedContributionStatusCount> convertToStatusCountList(List<Object[]> statistics) {
+        boolean[] present = new boolean[3];
+        List<AssignedContributionStatusCount> converted = statistics.stream().map((obj) -> {
+            ProblemContributionStatus pcs = (ProblemContributionStatus)obj[0];
+            present[pcs.ordinal()] = true;
+            return new AssignedContributionStatusCount(pcs, (Long)obj[1]);
+        }).collect(Collectors.toList());
+        for (int i = 0; i < 3; i++)
+            if (!present[i])
+                converted.add(new AssignedContributionStatusCount(ProblemContributionStatus.values()[i], 0));
+
+        return converted;
     }
 }

@@ -1,8 +1,6 @@
 package com.example.bachelorsbackend.controllers;
 
-import com.example.bachelorsbackend.dtos.ContributionRefusalDTO;
-import com.example.bachelorsbackend.dtos.Page;
-import com.example.bachelorsbackend.dtos.UnassignedContributionRowDTO;
+import com.example.bachelorsbackend.dtos.*;
 import com.example.bachelorsbackend.mappers.ProblemContributionMapper;
 import com.example.bachelorsbackend.models.ProblemContribution;
 import com.example.bachelorsbackend.services.IProblemContributionService;
@@ -10,6 +8,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -26,9 +26,9 @@ public class ManageContributionsController {
     }
 
     @GetMapping("/unassigned")
-    public ResponseEntity<Page<UnassignedContributionRowDTO>> getUnassignedContributions(@RequestParam int page, @RequestParam int size) {
-        Slice<ProblemContribution> resultPage = service.findUnassignedContributions(page, size);
-        return ok(Page.of(resultPage, mapper::entityToUnassignedContributionRow));
+    public ResponseEntity<Page<UnassignedContributionRowDTO>> getUnassignedContributions(@RequestParam int page, @RequestParam int size, @RequestParam(defaultValue="") String q, @RequestParam(defaultValue="descending") String order) {
+        Slice<ProblemContribution> resultPage = service.findUnassignedContributions(page, size, q, order);
+        return ok(PageFactory.of(resultPage, mapper::entityToUnassignedContributionRow, q, order));
     }
 
     @PutMapping("/assign/{id}")
@@ -39,5 +39,16 @@ public class ManageContributionsController {
     @PutMapping("/reject/{id}")
     public void rejectContribution(@PathVariable int id, @RequestBody ContributionRefusalDTO dto) {
         this.service.rejectContribution(id, dto.getStatusDetails());
+    }
+
+    @GetMapping("/assigned")
+    public ResponseEntity<Page<AssignedContributionRowDTO>> getAssignedContributions(@RequestParam int page, @RequestParam int size, @RequestParam(defaultValue="") String q, @RequestParam(defaultValue="descending") String order, @RequestParam(defaultValue="") String status) {
+        Slice<ProblemContribution> resultPage = service.findAssignedContributions(page, size, q, order, status);
+        return ok(PageFactory.of(resultPage, mapper::entityToAssignedContributionRow, q, order, status));
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<List<AssignedContributionStatusCount>> getStatistics() {
+        return ok(service.findDeveloperStatistics());
     }
 }

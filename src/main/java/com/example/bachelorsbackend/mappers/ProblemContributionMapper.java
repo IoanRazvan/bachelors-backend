@@ -1,9 +1,6 @@
 package com.example.bachelorsbackend.mappers;
 
-import com.example.bachelorsbackend.dtos.PreviousContributionRowDTO;
-import com.example.bachelorsbackend.dtos.ProblemContributionRequestDTO;
-import com.example.bachelorsbackend.dtos.ProblemContributionResponseDTO;
-import com.example.bachelorsbackend.dtos.UnassignedContributionRowDTO;
+import com.example.bachelorsbackend.dtos.*;
 import com.example.bachelorsbackend.models.ProblemContribution;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -32,4 +29,7 @@ public abstract class ProblemContributionMapper {
 
     @Mapping(target="contributorUsername", expression = "java(entity.getContributor().getUsername())")
     public abstract UnassignedContributionRowDTO entityToUnassignedContributionRow(ProblemContribution entity);
+
+    @Mapping(target="contributorUsername", expression="java(entity.getContributor().getUsername())")
+    public abstract AssignedContributionRowDTO entityToAssignedContributionRow(ProblemContribution entity);
 }

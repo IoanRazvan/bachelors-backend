@@ -1,9 +1,6 @@
 package com.example.bachelorsbackend.controllers;
 
-import com.example.bachelorsbackend.dtos.Page;
-import com.example.bachelorsbackend.dtos.PreviousContributionRowDTO;
-import com.example.bachelorsbackend.dtos.ProblemContributionRequestDTO;
-import com.example.bachelorsbackend.dtos.ProblemContributionResponseDTO;
+import com.example.bachelorsbackend.dtos.*;
 import com.example.bachelorsbackend.mappers.ProblemContributionMapper;
 import com.example.bachelorsbackend.models.ProblemContribution;
 import com.example.bachelorsbackend.services.IProblemContributionService;
@@ -54,7 +51,7 @@ public class ProblemContributionController {
     @GetMapping
     public ResponseEntity<Page<PreviousContributionRowDTO>> getContributions(@RequestParam int page, @RequestParam int size) {
         Slice<ProblemContribution> resultsPage = service.findByLoggedInUser(page, size);
-        return ok(Page.of(resultsPage, mapper::entityToPreviousContributionRow));
+        return ok(PageFactory.of(resultsPage, mapper::entityToPreviousContributionRow));
     }
 
     @GetMapping("{id}")

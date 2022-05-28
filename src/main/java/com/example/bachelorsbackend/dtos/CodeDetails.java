@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SolutionImplementationDTO {
+public class CodeDetails {
     private String code;
     private int langId;
-    private String input;
-    private String output;
+    private String[] input;
+    private String[] output;
 }

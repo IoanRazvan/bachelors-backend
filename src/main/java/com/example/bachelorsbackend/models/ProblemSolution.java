@@ -2,10 +2,7 @@ package com.example.bachelorsbackend.models;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 @Data
@@ -20,5 +17,6 @@ public class ProblemSolution {
     @ManyToOne
     private ProgrammingLanguage programmingLanguage;
 
+    @Lob
     private String sourceCode;
 }

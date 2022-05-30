@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 @Data
 public class CommentKey implements Serializable {
-    private int user;
+    private String user;
 
     private int problem;
 }

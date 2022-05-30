@@ -12,27 +12,37 @@ public class Problem {
     @GeneratedValue
     private int id;
 
-    private String problemTitle;
+    private String title;
 
-    private String problemStatement;
+    @Lob
+    private String description;
 
-    @ManyToOne
-    private User author;
+    @Enumerated(EnumType.STRING)
+    private ProblemDifficulty difficulty;
 
     private int numberOfLikes;
 
     private int numberOfDislikes;
 
-    private String problemInput;
+    @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ProblemTestcase> problemTestcases;
 
-    private boolean isPublic;
-
-    @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY)
-    private List<ProblemDetail> problemDetails;
-
-    @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ProblemSolution> problemSolutions;
 
-    @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY)
-    private List<ProblemCategory> problemCategories;
+    @JoinTable(name="PROBlEM_CATEGORY")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    private List<Category> problemCategories;
+
+    public void setProblemSolutions(List<ProblemSolution> problemSolutions) {
+        for (ProblemSolution solution : problemSolutions)
+            solution.setProblem(this);
+        this.problemSolutions = problemSolutions;
+    }
+
+    public void setProblemTestcases(List<ProblemTestcase> testcases) {
+        for (ProblemTestcase testcase : testcases)
+            testcase.setProblem(this);
+        this.problemTestcases = testcases;
+    }
 }

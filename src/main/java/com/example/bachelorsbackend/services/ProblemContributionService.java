@@ -1,6 +1,7 @@
 package com.example.bachelorsbackend.services;
 
 import com.example.bachelorsbackend.dtos.AssignedContributionStatusCount;
+import com.example.bachelorsbackend.models.Problem;
 import com.example.bachelorsbackend.models.ProblemContribution;
 import com.example.bachelorsbackend.models.ProblemContributionStatus;
 import com.example.bachelorsbackend.models.User;
@@ -15,16 +16,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
 
 import static com.example.bachelorsbackend.services.ServiceUtils.*;
 
 @Service
 public class ProblemContributionService implements IProblemContributionService {
     private final IProblemContributionRepository repo;
+    private final IProblemService service;
     public static final String UPDATE_DIFFERENT_ENTITY_IDS_ERROR = "ID of old contribution must match that of new contribution";
     public static final String UPDATE_NON_PENDING_CONTRIBUTION_ERROR = "Only pending contributions can be updated";
     public static final String UPDATE_READONLY_FIELD_ERROR = "Tried to update read only field";
@@ -33,8 +37,9 @@ public class ProblemContributionService implements IProblemContributionService {
     public static final String UPDATE_NON_ASSIGNED_CONTRIBUTION = "Only assigned contributions can be rejected";
 
 
-    public ProblemContributionService(IProblemContributionRepository repo) {
+    public ProblemContributionService(IProblemContributionRepository repo, IProblemService service) {
         this.repo = repo;
+        this.service = service;
     }
 
     @Override
@@ -166,6 +171,17 @@ public class ProblemContributionService implements IProblemContributionService {
 
     @Override
     public void rejectContribution(int contributionId, String statusDetails) {
+        setContributionStatus(contributionId, ProblemContributionStatus.REJECTED, (contribution) -> contribution.setStatusDetails(statusDetails));
+    }
+
+    @Override
+    @Transactional
+    public void acceptContribution(int contributionId, Problem problem) {
+        setContributionStatus(contributionId, ProblemContributionStatus.ACCEPTED, (contribution) -> {});
+        service.save(problem);
+    }
+
+    private void setContributionStatus(int contributionId, ProblemContributionStatus status, Consumer<ProblemContribution> additionalBehavior) {
         User u = getLoggedInUser();
         UserJwtAuthenticationToken authentication = getAuthentication();
         if (!hasDeveloperRole(authentication))
@@ -176,8 +192,8 @@ public class ProblemContributionService implements IProblemContributionService {
                 throw new InvalidOperationException(UPDATE_NON_ASSIGNED_CONTRIBUTION);
             else if (contribution.getStatus() != ProblemContributionStatus.PENDING)
                 throw new InvalidOperationException(UPDATE_NON_PENDING_CONTRIBUTION_ERROR);
-            contribution.setStatus(ProblemContributionStatus.REJECTED);
-            contribution.setStatusDetails(statusDetails);
+            contribution.setStatus(status);
+            additionalBehavior.accept(contribution);
             repo.save(contribution);
         }, ResourceNotFoundException::new);
     }
@@ -193,15 +209,15 @@ public class ProblemContributionService implements IProblemContributionService {
     }
 
     private List<AssignedContributionStatusCount> convertToStatusCountList(List<Object[]> statistics) {
-        boolean[] present = new boolean[3];
-        List<AssignedContributionStatusCount> converted = statistics.stream().map((obj) -> {
+        long[] count = new long[3];
+        statistics.forEach((obj) -> {
             ProblemContributionStatus pcs = (ProblemContributionStatus)obj[0];
-            present[pcs.ordinal()] = true;
-            return new AssignedContributionStatusCount(pcs, (Long)obj[1]);
-        }).collect(Collectors.toList());
+            count[pcs.ordinal()] = (Long)obj[1];
+        });
+        List<AssignedContributionStatusCount> converted = new ArrayList<>();
+
         for (int i = 0; i < 3; i++)
-            if (!present[i])
-                converted.add(new AssignedContributionStatusCount(ProblemContributionStatus.values()[i], 0));
+            converted.add(new AssignedContributionStatusCount(ProblemContributionStatus.values()[i], count[i]));
 
         return converted;
     }

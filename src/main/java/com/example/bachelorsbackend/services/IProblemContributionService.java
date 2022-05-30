@@ -1,6 +1,7 @@
 package com.example.bachelorsbackend.services;
 
 import com.example.bachelorsbackend.dtos.AssignedContributionStatusCount;
+import com.example.bachelorsbackend.models.Problem;
 import com.example.bachelorsbackend.models.ProblemContribution;
 import org.springframework.data.domain.Slice;
 
@@ -25,6 +26,8 @@ public interface IProblemContributionService {
     void assignContribution(int contributionId);
 
     void rejectContribution(int contributionId, String statusDetails);
+
+    void acceptContribution(int contributionId, Problem problem);
 
     List<AssignedContributionStatusCount> findDeveloperStatistics();
 }

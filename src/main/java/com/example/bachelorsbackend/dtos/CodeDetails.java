@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class CodeDetails {
     private String code;
-    private int langId;
+    private String langId;
     private String[] input;
     private String[] output;
 }

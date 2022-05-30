@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Optional;
 
 public class AuthenticationProcessorFilter extends OncePerRequestFilter {
     private final IUserRepository userRepository;
@@ -30,13 +29,12 @@ public class AuthenticationProcessorFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Optional<User> registeredUser = userRepository.findBySubject(jwt.getSubject());
-        User user = registeredUser.orElseGet(() -> createNewUser(jwt));
+        User user = createUser(jwt);
         changeSecurityContextAuthentication(new UserJwtAuthenticationToken(jwt, user, jwtCollectionConverter), request);
         filterChain.doFilter(request, response);
     }
 
-    private User createNewUser(Jwt jwt) {
+    private User createUser(Jwt jwt) {
         User user = new User();
         user.setSubject(jwt.getSubject());
         user.setUsername(jwt.getClaim("preferred_username"));

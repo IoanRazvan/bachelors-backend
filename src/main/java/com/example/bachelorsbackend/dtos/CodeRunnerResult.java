@@ -15,5 +15,5 @@ public class CodeRunnerResult {
     private String error;
     private String stdout;
     private String langId;
-    private int wrongAnswerIdx;
+    private WrongAnswer wrongAnswer;
 }

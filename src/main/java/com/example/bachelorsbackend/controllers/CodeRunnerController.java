@@ -1,36 +1,51 @@
 package com.example.bachelorsbackend.controllers;
 
-import com.example.bachelorsbackend.dtos.CodeDetails;
+import com.example.bachelorsbackend.dtos.*;
+import com.example.bachelorsbackend.mappers.SubmissionMapper;
+import com.example.bachelorsbackend.models.Submission;
 import com.example.bachelorsbackend.services.ICodeRunnerService;
-import com.example.bachelorsbackend.dtos.CodeRunnerResult;
+import com.example.bachelorsbackend.services.ISubmissionService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
+
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("api/code-runner")
 public class CodeRunnerController {
     private final ICodeRunnerService service;
+    private final ISubmissionService submissionService;
+    private final SubmissionMapper mapper;
 
-    public CodeRunnerController(ICodeRunnerService service) {
+    public CodeRunnerController(ICodeRunnerService service, ISubmissionService submissionService, SubmissionMapper mapper) {
         this.service = service;
+        this.submissionService = submissionService;
+        this.mapper = mapper;
     }
 
     @PostMapping("/check-program")
     @Secured("ROLE_DEVELOPER")
-    CodeRunnerResult checkProgram(@RequestBody CodeDetails codeDetails) throws IOException, InterruptedException {
-        return this.service.runProgram(codeDetails);
+    ResponseEntity<CodeRunnerResult> checkProgram(@RequestBody CodeDetails codeDetails) throws IOException, InterruptedException {
+        return ok(service.runProgram(codeDetails));
     }
 
     @PostMapping("/check-against-testcases")
     @Secured("ROLE_DEVELOPER")
-    List<CodeRunnerResult> checkSolutionsAgainstTestcases(@RequestBody List<CodeDetails> solutions) throws InterruptedException, ExecutionException {
-        return this.service.runPrograms(solutions);
+    ResponseEntity<List<CodeRunnerResult>> checkSolutionsAgainstTestcases(@RequestBody List<CodeDetails> solutions) throws InterruptedException, ExecutionException {
+        return ok(service.runPrograms(solutions));
+    }
+
+    @PostMapping("/submit-solution/{problemId}")
+    public ResponseEntity<Map<String, Object>> submitSolution(@PathVariable int problemId, @RequestBody SubmissionRequestDTO submissionDto) throws IOException, InterruptedException {
+        CodeRunnerResult result = service.runSubmission(problemId, submissionDto.getSourceCode(), submissionDto.getLanguageId());
+        Submission submission = submissionService.save(problemId, submissionDto.getSourceCode(), result);
+        SubmissionRowDTO dto = mapper.submissionEntityToRowDto(submission);
+        return ok(Map.of("codeRunnerResult", result, "submission", dto));
     }
 }

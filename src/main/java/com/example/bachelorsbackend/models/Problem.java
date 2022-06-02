@@ -20,17 +20,13 @@ public class Problem {
     @Enumerated(EnumType.STRING)
     private ProblemDifficulty difficulty;
 
-    private int numberOfLikes;
-
-    private int numberOfDislikes;
-
     @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ProblemTestcase> problemTestcases;
 
     @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ProblemSolution> problemSolutions;
 
-    @JoinTable(name="PROBlEM_CATEGORY")
+    @JoinTable(name="PROBLEM_CATEGORY")
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Category> problemCategories;
 

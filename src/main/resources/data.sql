@@ -27,7 +27,6 @@ insert into CATEGORY values(HIBERNATE_SEQUENCE.nextval, 'Trie');
 insert into CATEGORY values(HIBERNATE_SEQUENCE.nextval, 'Binary Search Tree');
 insert into CATEGORY values(HIBERNATE_SEQUENCE.nextval, 'Divide and Conquer');
 insert into CATEGORY values(HIBERNATE_SEQUENCE.nextval, 'Queue');
-insert into CATEGORY values(HIBERNATE_SEQUENCE.nextval, 'Depth-First Search');
 
 
 COMMIT;

@@ -11,6 +11,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -31,7 +32,8 @@ public class ManageContributionsController {
     @GetMapping("/unassigned")
     public ResponseEntity<Page<UnassignedContributionRowDTO>> getUnassignedContributions(@RequestParam int page, @RequestParam int size, @RequestParam(defaultValue="") String q, @RequestParam(defaultValue="descending") String order) {
         Slice<ProblemContribution> resultPage = contributionService.findUnassignedContributions(page, size, q, order);
-        return ok(PageFactory.of(resultPage, contributionMapper::entityToUnassignedContributionRow, q, order));
+        Map<String, Object> parameters = Map.of("query", q, "order", order);
+        return ok(PageFactory.of(resultPage, contributionMapper::entityToUnassignedContributionRow, parameters));
     }
 
     @PutMapping("/assign/{id}")
@@ -52,7 +54,8 @@ public class ManageContributionsController {
     @GetMapping("/assigned")
     public ResponseEntity<Page<AssignedContributionRowDTO>> getAssignedContributions(@RequestParam int page, @RequestParam int size, @RequestParam(defaultValue="") String q, @RequestParam(defaultValue="descending") String order, @RequestParam(defaultValue="") String status) {
         Slice<ProblemContribution> resultPage = contributionService.findAssignedContributions(page, size, q, order, status);
-        return ok(PageFactory.of(resultPage, contributionMapper::entityToAssignedContributionRow, q, order, status));
+        Map<String, Object> parameters = Map.of( "query", q, "order", order, "status", status);
+        return ok(PageFactory.of(resultPage, contributionMapper::entityToAssignedContributionRow, parameters));
     }
 
     @GetMapping("/statistics")

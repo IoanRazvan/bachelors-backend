@@ -1,6 +1,7 @@
 package com.example.bachelorsbackend.dtos;
 
 import com.example.bachelorsbackend.models.Category;
+import com.example.bachelorsbackend.models.ProblemDifficulty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ public class ProblemResponseDTO {
     private int id;
     private String title;
     private String description;
+    private ProblemDifficulty difficulty;
     private List<ProblemStarterDTO> starters;
     private List<Category> categories;
 }

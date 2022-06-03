@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserListRowDTO extends UserListResponseDTO {
-    private boolean containsProblem;
+public class UserListRequestDTO {
+    private String listTitle;
 }

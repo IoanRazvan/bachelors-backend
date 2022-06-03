@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping("/api/list")
+@RequestMapping("/api/user-list")
 public class UserListController {
     private final IUserListService service;
     private final ObjectArrayToUserListRowDTOConverter converter;

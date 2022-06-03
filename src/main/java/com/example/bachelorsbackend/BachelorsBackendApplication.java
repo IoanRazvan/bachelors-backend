@@ -1,6 +1,7 @@
 package com.example.bachelorsbackend;
 
 import com.example.bachelorsbackend.converters.ObjectArrayToProblemRowDTOConverter;
+import com.example.bachelorsbackend.converters.ObjectArrayToUserListRowDTOConverter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +16,12 @@ public class BachelorsBackendApplication {
     }
 
     @Bean
-    ObjectArrayToProblemRowDTOConverter converter() {
+    ObjectArrayToProblemRowDTOConverter problemRowConverter() {
         return new ObjectArrayToProblemRowDTOConverter();
+    }
+
+    @Bean
+    ObjectArrayToUserListRowDTOConverter userLisRowConverter() {
+        return new ObjectArrayToUserListRowDTOConverter();
     }
 }

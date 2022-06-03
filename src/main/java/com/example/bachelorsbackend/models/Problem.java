@@ -1,12 +1,14 @@
 package com.example.bachelorsbackend.models;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Problem {
     @Id
     @GeneratedValue
@@ -40,5 +42,9 @@ public class Problem {
         for (ProblemTestcase testcase : testcases)
             testcase.setProblem(this);
         this.problemTestcases = testcases;
+    }
+
+    public Problem(int id) {
+        this.id = id;
     }
 }

@@ -1,12 +1,14 @@
 package com.example.bachelorsbackend.models;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class UserList {
     @Id
     @GeneratedValue
@@ -19,4 +21,8 @@ public class UserList {
 
     @OneToMany(mappedBy = "problem")
     private List<UserListProblem> userListProblems;
+
+    public UserList(int id) {
+        this.id = id;
+    }
 }

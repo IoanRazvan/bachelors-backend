@@ -24,7 +24,7 @@ public class SubmissionController {
         this.mapper = mapper;
     }
 
-    @GetMapping("{problemId}")
+    @GetMapping("/problem/{problemId}")
     public ResponseEntity<List<SubmissionRowDTO>> getSubmissions(@PathVariable int problemId) {
         return ok(mapper.submissionEntitiesToRowDTOs(service.findSubmissions(problemId)));
     }

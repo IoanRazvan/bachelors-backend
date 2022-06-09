@@ -50,7 +50,7 @@ public interface IProblemRepository extends CrudRepository<Problem, Integer> {
     @Query("select p.id, p.title, p.difficulty, case " +
             "when not exists (select 1 from Submission s where s.problem = p and s.user = ?1) then 'Todo' " +
             "when exists (select 1 from Submission s where s.problem = p and s.statusCode = 0 and s.user = ?1) then 'Solved' " +
-            "else 'Attemtped' " +
+            "else 'Attempted' " +
             "end as status " +
             "from Problem p " +
             "where p.difficulty = ?2 and p.title like concat('%', ?4, '%') and not exists (select 1 from Category c where c in ?3 and not exists (select 1 from p.problemCategories pc where pc = c))")

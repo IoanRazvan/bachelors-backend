@@ -48,8 +48,8 @@ public abstract class ProblemMapper {
         responseDTO.setLanguageId(solution.getProgrammingLanguage().getId());
         responseDTO.setLanguageName(solution.getProgrammingLanguage().getLanguageName());
         String starterCode = solution.getSourceCode().split("// starter")[1];
-        String[] starterCodeSplit = starterCode.split("// solution");
-        responseDTO.setSourceCode(starterCodeSplit[0] + starterCodeSplit[2]);
+        String starterWithoutSolution = starterCode.replaceAll("(?s)// solution.+?// solution", "");
+        responseDTO.setSourceCode(starterWithoutSolution);
         return responseDTO;
     }
 }

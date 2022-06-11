@@ -13,6 +13,4 @@ public class SubmissionDTO {
     private String sourceCode;
     private String languageId;
     private int statusCode;
-    private PassingSubmissionDTO passingDto;
-    private FailedSubmissionDTO failedDto;
 }

@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FailedSubmissionDTO {
+public class FailedSubmissionDTO extends SubmissionDTO {
     private String error;
     private String input;
     private String output;

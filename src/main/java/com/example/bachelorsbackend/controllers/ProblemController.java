@@ -1,6 +1,5 @@
 package com.example.bachelorsbackend.controllers;
 
-import com.example.bachelorsbackend.converters.ObjectArrayToProblemRowDTOConverter;
 import com.example.bachelorsbackend.dtos.Page;
 import com.example.bachelorsbackend.dtos.PageFactory;
 import com.example.bachelorsbackend.dtos.ProblemResponseDTO;
@@ -10,6 +9,7 @@ import com.example.bachelorsbackend.models.Category;
 import com.example.bachelorsbackend.models.Problem;
 import com.example.bachelorsbackend.models.ProblemDifficulty;
 import com.example.bachelorsbackend.services.IProblemService;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +26,9 @@ import static org.springframework.http.ResponseEntity.ok;
 public class ProblemController {
     private final IProblemService service;
     private final ProblemMapper mapper;
-    private final ObjectArrayToProblemRowDTOConverter converter;
+    private final Converter<Object[], ProblemRowDTO> converter;
 
-    public ProblemController(IProblemService service, ProblemMapper mapper, ObjectArrayToProblemRowDTOConverter converter) {
+    public ProblemController(IProblemService service, ProblemMapper mapper, Converter<Object[], ProblemRowDTO> converter) {
         this.service = service;
         this.mapper = mapper;
         this.converter = converter;

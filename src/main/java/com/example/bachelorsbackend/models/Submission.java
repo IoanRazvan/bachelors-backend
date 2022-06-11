@@ -49,7 +49,7 @@ public class Submission {
         if (result.getStatus() == 0)
             this.passingSubmission = new PassingSubmission(this, result.getRuntime());
         else
-            this.failedSubmission = new FailedSubmission(this, result.getError(), result.getWrongAnswer().getInput(), result.getOutput(), result.getWrongAnswer().getExpected());
+            this.failedSubmission = new FailedSubmission(this, result.getError(), result.getWrongAnswer().getInput(), result.getWrongAnswer().getActual(), result.getWrongAnswer().getExpected());
     }
 
     @PrePersist

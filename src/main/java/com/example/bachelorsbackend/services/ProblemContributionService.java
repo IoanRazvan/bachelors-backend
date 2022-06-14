@@ -1,9 +1,6 @@
 package com.example.bachelorsbackend.services;
 
-import com.example.bachelorsbackend.dtos.AssignedContributionRowDTO;
-import com.example.bachelorsbackend.dtos.AssignedContributionStatusCount;
-import com.example.bachelorsbackend.dtos.ProblemRequestDTO;
-import com.example.bachelorsbackend.dtos.UnassignedContributionRowDTO;
+import com.example.bachelorsbackend.dtos.*;
 import com.example.bachelorsbackend.mappers.ProblemContributionMapper;
 import com.example.bachelorsbackend.mappers.ProblemMapper;
 import com.example.bachelorsbackend.models.ProblemContribution;
@@ -14,8 +11,8 @@ import com.example.bachelorsbackend.security.UserJwtAuthenticationToken;
 import com.example.bachelorsbackend.services.exceptions.AccessDeniedException;
 import com.example.bachelorsbackend.services.exceptions.InvalidOperationException;
 import com.example.bachelorsbackend.services.exceptions.ResourceNotFoundException;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.hibernate.StaleStateException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -36,9 +33,7 @@ public class ProblemContributionService implements IProblemContributionService {
     private final Converter<List<Object[]>, List<AssignedContributionStatusCount>> converter;
     private final ProblemContributionMapper contributionMapper;
     private final ProblemMapper problemMapper;
-    public static final String UPDATE_DIFFERENT_ENTITY_IDS_ERROR = "ID of old contribution must match that of new contribution";
     public static final String UPDATE_NON_PENDING_CONTRIBUTION_ERROR = "Only pending contributions can be updated";
-    public static final String UPDATE_READONLY_FIELD_ERROR = "Tried to update read only field";
     public static final String DELETE_NON_PENDING_CONTRIBUTION_ERROR = "Only pending contributions can be deleted";
     public static final String UPDATE_CONTRIBUTION_ASSIGNED_TO = "Contributions cannot be reassigned";
     public static final String UPDATE_NON_ASSIGNED_CONTRIBUTION = "Only assigned contributions can be rejected";
@@ -53,59 +48,42 @@ public class ProblemContributionService implements IProblemContributionService {
     }
 
     @Override
-    public ProblemContribution save(ProblemContribution problemContribution) {
+    public ProblemContributionResponseDTO save(ProblemContributionRequestDTO requestDto) {
         User contributor = getLoggedInUser();
+        ProblemContribution problemContribution = contributionMapper.dtoToEntity(requestDto);
         problemContribution.setContributor(contributor);
-        return repo.save(problemContribution);
+        return contributionMapper.entityToDTO(repo.save(problemContribution));
     }
 
     @Override
-    public ProblemContribution update(int id, ProblemContribution newContribution) {
+    public ProblemContributionResponseDTO update(int id, ProblemContributionRequestDTO newContribution) {
         ProblemContribution oldContribution = repo.findById(id).orElseThrow(ResourceNotFoundException::new);
-        if (oldContribution.getId() != newContribution.getId())
-            throw new IllegalArgumentException(UPDATE_DIFFERENT_ENTITY_IDS_ERROR);
         if (oldContribution.getStatus() != ProblemContributionStatus.PENDING)
             throw new InvalidOperationException(UPDATE_NON_PENDING_CONTRIBUTION_ERROR);
 
-        UserJwtAuthenticationToken authentication = getAuthentication();
         User user = getLoggedInUser();
         if (oldContribution.getContributor().equals(user))
-            checkUpdateByOwner(oldContribution, newContribution);
-        else if (hasDeveloperRole(authentication) && (oldContribution.getAssignedTo() == null || oldContribution.getAssignedTo().equals(user)))
-            checkUpdateByDeveloper(oldContribution, newContribution);
-        else
             throw new AccessDeniedException();
-        return repo.save(newContribution);
-    }
-
-    private void checkUpdateByDeveloper(ProblemContribution oldContribution, ProblemContribution newContribution) {
-        boolean equals = EqualsBuilder.reflectionEquals(oldContribution, newContribution, "status", "statusDetails");
-        if (!equals)
-            throw new InvalidOperationException(UPDATE_READONLY_FIELD_ERROR);
-    }
-
-    private void checkUpdateByOwner(ProblemContribution oldContribution, ProblemContribution newContribution) {
-        boolean equals = EqualsBuilder.reflectionEquals(oldContribution, newContribution, "title", "description", "solution", "testcase");
-        if (!equals)
-            throw new InvalidOperationException(UPDATE_READONLY_FIELD_ERROR);
+        BeanUtils.copyProperties(oldContribution, newContribution);
+        return contributionMapper.entityToDTO(repo.save(oldContribution));
     }
 
     @Override
-    public Slice<ProblemContribution> findByLoggedInUser(int page, int size) {
+    public Slice<PreviousContributionRowDTO> findByLoggedInUser(int page, int size) {
         User contributor = getLoggedInUser();
-        return repo.findByContributor(PageRequest.of(page, size, Sort.Direction.DESC, "createdTime"), contributor);
+        Slice<ProblemContribution> result = repo.findByContributor(PageRequest.of(page, size, Sort.Direction.DESC, "createdTime"), contributor);
+        return result.map(contributionMapper::entityToPreviousContributionRow);
     }
 
     @Override
-    public Optional<ProblemContribution> findById(int id) {
+    public ProblemContributionResponseDTO findById(int id) {
         Optional<ProblemContribution> contributionOpt = repo.findById(id);
-        contributionOpt.ifPresent(contribution -> {
-            UserJwtAuthenticationToken authentication = getAuthentication();
-            User user = getLoggedInUser();
-            if (!contribution.getContributor().equals(user) && !hasDeveloperRole(authentication))
-                throw new AccessDeniedException();
-        });
-        return contributionOpt;
+        ProblemContribution contribution = contributionOpt.orElseThrow(ResourceNotFoundException::new);
+        UserJwtAuthenticationToken authentication = getAuthentication();
+        User user = getLoggedInUser();
+        if (!contribution.getContributor().equals(user) && !hasDeveloperRole(authentication))
+            throw new AccessDeniedException();
+        return contributionMapper.entityToDTO(contribution);
     }
 
     @Override

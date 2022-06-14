@@ -1,23 +1,18 @@
 package com.example.bachelorsbackend.services;
 
-import com.example.bachelorsbackend.dtos.AssignedContributionRowDTO;
-import com.example.bachelorsbackend.dtos.AssignedContributionStatusCount;
-import com.example.bachelorsbackend.dtos.ProblemRequestDTO;
-import com.example.bachelorsbackend.dtos.UnassignedContributionRowDTO;
-import com.example.bachelorsbackend.models.ProblemContribution;
+import com.example.bachelorsbackend.dtos.*;
 import org.springframework.data.domain.Slice;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface IProblemContributionService {
-    ProblemContribution save(ProblemContribution problemContribution);
+    ProblemContributionResponseDTO save(ProblemContributionRequestDTO problemContribution);
 
-    ProblemContribution update(int id, ProblemContribution newContribution);
+    ProblemContributionResponseDTO update(int id, ProblemContributionRequestDTO newContribution);
 
-    Slice<ProblemContribution> findByLoggedInUser(int page, int size);
+    Slice<PreviousContributionRowDTO> findByLoggedInUser(int page, int size);
 
-    Optional<ProblemContribution> findById(int id);
+    ProblemContributionResponseDTO findById(int id);
 
     void deleteById(int id);
 

@@ -1,7 +1,11 @@
 package com.example.bachelorsbackend.services;
 
+import com.example.bachelorsbackend.dtos.AssignedContributionRowDTO;
 import com.example.bachelorsbackend.dtos.AssignedContributionStatusCount;
-import com.example.bachelorsbackend.models.Problem;
+import com.example.bachelorsbackend.dtos.ProblemRequestDTO;
+import com.example.bachelorsbackend.dtos.UnassignedContributionRowDTO;
+import com.example.bachelorsbackend.mappers.ProblemContributionMapper;
+import com.example.bachelorsbackend.mappers.ProblemMapper;
 import com.example.bachelorsbackend.models.ProblemContribution;
 import com.example.bachelorsbackend.models.ProblemContributionStatus;
 import com.example.bachelorsbackend.models.User;
@@ -30,6 +34,8 @@ public class ProblemContributionService implements IProblemContributionService {
     private final IProblemContributionRepository repo;
     private final IProblemService service;
     private final Converter<List<Object[]>, List<AssignedContributionStatusCount>> converter;
+    private final ProblemContributionMapper contributionMapper;
+    private final ProblemMapper problemMapper;
     public static final String UPDATE_DIFFERENT_ENTITY_IDS_ERROR = "ID of old contribution must match that of new contribution";
     public static final String UPDATE_NON_PENDING_CONTRIBUTION_ERROR = "Only pending contributions can be updated";
     public static final String UPDATE_READONLY_FIELD_ERROR = "Tried to update read only field";
@@ -38,10 +44,12 @@ public class ProblemContributionService implements IProblemContributionService {
     public static final String UPDATE_NON_ASSIGNED_CONTRIBUTION = "Only assigned contributions can be rejected";
 
 
-    public ProblemContributionService(IProblemContributionRepository repo, IProblemService service, Converter<List<Object[]>, List<AssignedContributionStatusCount>> converter) {
+    public ProblemContributionService(IProblemContributionRepository repo, IProblemService service, Converter<List<Object[]>, List<AssignedContributionStatusCount>> converter, ProblemContributionMapper contributionMapper, ProblemMapper problemMapper) {
         this.repo = repo;
         this.service = service;
         this.converter = converter;
+        this.contributionMapper = contributionMapper;
+        this.problemMapper = problemMapper;
     }
 
     @Override
@@ -114,13 +122,14 @@ public class ProblemContributionService implements IProblemContributionService {
     }
 
     @Override
-    public Slice<ProblemContribution> findUnassignedContributions(int page, int size, String q, String order) {
+    public Slice<UnassignedContributionRowDTO> findUnassignedContributions(int page, int size, String q, String order) {
         User user = getLoggedInUser();
         UserJwtAuthenticationToken authentication = getAuthentication();
         if (!hasDeveloperRole(authentication))
             throw new AccessDeniedException();
         Sort.Direction sortingDirection = convertStringToOrderDirection(order);
-        return repo.findUnassignedContributions(PageRequest.of(page, size, Sort.by(sortingDirection, "createdTime")), user, q);
+        Slice<ProblemContribution> result = repo.findUnassignedContributions(PageRequest.of(page, size, Sort.by(sortingDirection, "createdTime")), user, q);
+        return result.map(contributionMapper::entityToUnassignedContributionRow);
     }
 
     private Sort.Direction convertStringToOrderDirection(String order) {
@@ -130,14 +139,15 @@ public class ProblemContributionService implements IProblemContributionService {
     }
 
     @Override
-    public Slice<ProblemContribution> findAssignedContributions(int page, int size, String q, String order, String status) {
+    public Slice<AssignedContributionRowDTO> findAssignedContributions(int page, int size, String q, String order, String status) {
         User user = getLoggedInUser();
         UserJwtAuthenticationToken authentication = getAuthentication();
         if (!hasDeveloperRole(authentication))
             throw new AccessDeniedException();
         List<ProblemContributionStatus> statuses = convertStringToProblemContributionStatusList(status);
         Sort.Direction sortingDirection = convertStringToOrderDirection(order);
-        return repo.findAssignedContributions(PageRequest.of(page, size, Sort.by(sortingDirection, "createdTime")), user, statuses, q);
+        Slice<ProblemContribution> result = repo.findAssignedContributions(PageRequest.of(page, size, Sort.by(sortingDirection, "createdTime")), user, statuses, q);
+        return result.map(contributionMapper::entityToAssignedContributionRow);
     }
 
     private List<ProblemContributionStatus> convertStringToProblemContributionStatusList(String status) {
@@ -178,9 +188,10 @@ public class ProblemContributionService implements IProblemContributionService {
 
     @Override
     @Transactional
-    public void acceptContribution(int contributionId, Problem problem) {
-        setContributionStatus(contributionId, ProblemContributionStatus.ACCEPTED, (contribution) -> {});
-        service.save(problem);
+    public void acceptContribution(int contributionId, ProblemRequestDTO problem) {
+        setContributionStatus(contributionId, ProblemContributionStatus.ACCEPTED, (contribution) -> {
+        });
+        service.save(problemMapper.problemDtoToEntity(problem));
     }
 
     private void setContributionStatus(int contributionId, ProblemContributionStatus status, Consumer<ProblemContribution> additionalBehavior) {

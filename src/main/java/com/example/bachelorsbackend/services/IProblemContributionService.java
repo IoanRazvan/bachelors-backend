@@ -1,7 +1,9 @@
 package com.example.bachelorsbackend.services;
 
+import com.example.bachelorsbackend.dtos.AssignedContributionRowDTO;
 import com.example.bachelorsbackend.dtos.AssignedContributionStatusCount;
-import com.example.bachelorsbackend.models.Problem;
+import com.example.bachelorsbackend.dtos.ProblemRequestDTO;
+import com.example.bachelorsbackend.dtos.UnassignedContributionRowDTO;
 import com.example.bachelorsbackend.models.ProblemContribution;
 import org.springframework.data.domain.Slice;
 
@@ -19,15 +21,15 @@ public interface IProblemContributionService {
 
     void deleteById(int id);
 
-    Slice<ProblemContribution> findUnassignedContributions(int page, int size, String q, String order);
+    Slice<UnassignedContributionRowDTO> findUnassignedContributions(int page, int size, String q, String order);
 
-    Slice<ProblemContribution> findAssignedContributions(int page, int size, String q, String order, String status);
+    Slice<AssignedContributionRowDTO> findAssignedContributions(int page, int size, String q, String order, String status);
 
     void assignContribution(int contributionId);
 
     void rejectContribution(int contributionId, String statusDetails);
 
-    void acceptContribution(int contributionId, Problem problem);
+    void acceptContribution(int contributionId, ProblemRequestDTO problem);
 
     List<AssignedContributionStatusCount> findDeveloperStatistics();
 }

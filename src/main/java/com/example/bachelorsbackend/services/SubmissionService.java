@@ -31,9 +31,10 @@ public class SubmissionService implements ISubmissionService {
     }
 
     @Override
-    public List<Submission> findSubmissions(int problemId) {
+    public List<SubmissionRowDTO> findSubmissions(int problemId) {
         User user = getLoggedInUser();
-        return repo.findByUserAndProblemId(Sort.by(Sort.Direction.DESC, "timestamp"), user, problemId);
+        List<Submission> result = repo.findByUserAndProblemId(Sort.by(Sort.Direction.DESC, "timestamp"), user, problemId);
+        return mapper.submissionEntitiesToRowDTOs(result);
     }
 
     @Override

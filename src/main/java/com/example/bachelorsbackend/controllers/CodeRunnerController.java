@@ -1,8 +1,9 @@
 package com.example.bachelorsbackend.controllers;
 
-import com.example.bachelorsbackend.dtos.*;
-import com.example.bachelorsbackend.mappers.SubmissionMapper;
-import com.example.bachelorsbackend.models.Submission;
+import com.example.bachelorsbackend.dtos.CodeDetails;
+import com.example.bachelorsbackend.dtos.CodeRunnerResult;
+import com.example.bachelorsbackend.dtos.SubmissionRequestDTO;
+import com.example.bachelorsbackend.dtos.SubmissionRowDTO;
 import com.example.bachelorsbackend.services.ICodeRunnerService;
 import com.example.bachelorsbackend.services.ISubmissionService;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +22,10 @@ import static org.springframework.http.ResponseEntity.ok;
 public class CodeRunnerController {
     private final ICodeRunnerService service;
     private final ISubmissionService submissionService;
-    private final SubmissionMapper mapper;
 
-    public CodeRunnerController(ICodeRunnerService service, ISubmissionService submissionService, SubmissionMapper mapper) {
+    public CodeRunnerController(ICodeRunnerService service, ISubmissionService submissionService) {
         this.service = service;
         this.submissionService = submissionService;
-        this.mapper = mapper;
     }
 
     @PostMapping("/check-program")
@@ -44,8 +43,7 @@ public class CodeRunnerController {
     @PostMapping("/submit-solution/{problemId}")
     public ResponseEntity<Map<String, Object>> submitSolution(@PathVariable int problemId, @RequestBody SubmissionRequestDTO submissionDto) throws IOException, InterruptedException {
         CodeRunnerResult result = service.runSubmission(problemId, submissionDto.getSourceCode(), submissionDto.getLanguageId());
-        Submission submission = submissionService.save(problemId, submissionDto.getSourceCode(), result);
-        SubmissionRowDTO dto = mapper.submissionEntityToRowDto(submission);
-        return ok(Map.of("codeRunnerResult", result, "submission", dto));
+        SubmissionRowDTO submission = submissionService.save(problemId, submissionDto.getSourceCode(), result);
+        return ok(Map.of("codeRunnerResult", result, "submission", submission));
     }
 }

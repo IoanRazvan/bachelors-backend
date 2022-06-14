@@ -3,6 +3,7 @@ package com.example.bachelorsbackend.services;
 import com.example.bachelorsbackend.dtos.AcceptedSubmissionDistributionBin;
 import com.example.bachelorsbackend.dtos.CodeRunnerResult;
 import com.example.bachelorsbackend.dtos.SubmissionDTO;
+import com.example.bachelorsbackend.dtos.SubmissionRowDTO;
 import com.example.bachelorsbackend.mappers.SubmissionMapper;
 import com.example.bachelorsbackend.models.Submission;
 import com.example.bachelorsbackend.models.User;
@@ -36,10 +37,10 @@ public class SubmissionService implements ISubmissionService {
     }
 
     @Override
-    public Submission save(int problemId, String sourceCode, CodeRunnerResult result) {
+    public SubmissionRowDTO save(int problemId, String sourceCode, CodeRunnerResult result) {
         User user = getLoggedInUser();
         Submission submission = new Submission(user, problemId, sourceCode, result);
-        return repo.save(submission);
+        return mapper.submissionEntityToRowDto(repo.save(submission));
     }
 
     @Override

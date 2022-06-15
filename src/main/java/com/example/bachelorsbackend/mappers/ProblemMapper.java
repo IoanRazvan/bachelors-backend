@@ -2,6 +2,7 @@ package com.example.bachelorsbackend.mappers;
 
 import com.example.bachelorsbackend.dtos.*;
 import com.example.bachelorsbackend.models.Problem;
+import com.example.bachelorsbackend.models.ProblemDifficulty;
 import com.example.bachelorsbackend.models.ProblemSolution;
 import com.example.bachelorsbackend.models.ProblemTestcase;
 import org.mapstruct.Mapper;
@@ -51,5 +52,14 @@ public abstract class ProblemMapper {
         String starterWithoutSolution = starterCode.replaceAll("(?s)// solution.+?// solution", "");
         responseDTO.setSourceCode(starterWithoutSolution);
         return responseDTO;
+    }
+
+    public ProblemRowDTO objectArrayToProblemRow(Object[] source) {
+        ProblemRowDTO target = new ProblemRowDTO();
+        target.setId((Integer) source[0]);
+        target.setTitle((String) source[1]);
+        target.setDifficulty((ProblemDifficulty) source[2]);
+        target.setStatus((String) source[3]);
+        return target;
     }
 }

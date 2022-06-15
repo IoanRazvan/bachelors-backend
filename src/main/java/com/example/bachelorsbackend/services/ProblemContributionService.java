@@ -13,7 +13,6 @@ import com.example.bachelorsbackend.services.exceptions.InvalidOperationExceptio
 import com.example.bachelorsbackend.services.exceptions.ResourceNotFoundException;
 import org.hibernate.StaleStateException;
 import org.springframework.beans.BeanUtils;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -30,7 +29,6 @@ import static com.example.bachelorsbackend.services.ServiceUtils.*;
 public class ProblemContributionService implements IProblemContributionService {
     private final IProblemContributionRepository repo;
     private final IProblemService service;
-    private final Converter<List<Object[]>, List<AssignedContributionStatusCount>> converter;
     private final ProblemContributionMapper contributionMapper;
     private final ProblemMapper problemMapper;
     public static final String UPDATE_NON_PENDING_CONTRIBUTION_ERROR = "Only pending contributions can be updated";
@@ -39,10 +37,9 @@ public class ProblemContributionService implements IProblemContributionService {
     public static final String UPDATE_NON_ASSIGNED_CONTRIBUTION = "Only assigned contributions can be rejected";
 
 
-    public ProblemContributionService(IProblemContributionRepository repo, IProblemService service, Converter<List<Object[]>, List<AssignedContributionStatusCount>> converter, ProblemContributionMapper contributionMapper, ProblemMapper problemMapper) {
+    public ProblemContributionService(IProblemContributionRepository repo, IProblemService service, ProblemContributionMapper contributionMapper, ProblemMapper problemMapper) {
         this.repo = repo;
         this.service = service;
-        this.converter = converter;
         this.contributionMapper = contributionMapper;
         this.problemMapper = problemMapper;
     }
@@ -196,6 +193,6 @@ public class ProblemContributionService implements IProblemContributionService {
         if (!hasDeveloperRole(authentication))
             throw new AccessDeniedException();
         List<Object[]> statistics = repo.findDeveloperStatistics(developer);
-        return converter.convert(statistics);
+        return contributionMapper.objectArrayToContributionStatusCount(statistics);
     }
 }

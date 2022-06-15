@@ -9,7 +9,6 @@ import com.example.bachelorsbackend.models.ProblemDifficulty;
 import com.example.bachelorsbackend.models.User;
 import com.example.bachelorsbackend.repositories.IProblemRepository;
 import com.example.bachelorsbackend.services.exceptions.ResourceNotFoundException;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -24,7 +23,6 @@ import static com.example.bachelorsbackend.services.ServiceUtils.getLoggedInUser
 @Service
 public class ProblemService implements IProblemService {
     private final ProblemMapper mapper;
-    private final Converter<Object[], ProblemRowDTO> converter;
 
     @FunctionalInterface
     private interface ProblemsFilteringQuery {
@@ -34,10 +32,9 @@ public class ProblemService implements IProblemService {
     private final IProblemRepository repo;
     private final Map<Integer, ProblemsFilteringQuery> methods;
 
-    public ProblemService(IProblemRepository repo, ProblemMapper mapper, Converter<Object[], ProblemRowDTO> converter) {
+    public ProblemService(IProblemRepository repo, ProblemMapper mapper) {
         this.repo = repo;
         this.mapper = mapper;
-        this.converter = converter;
         this.methods = Map.of(
                 0, (page, user, status, categories, difficulty, query) -> repo.getProblems(page, user, query),
                 1, (page, user, status, categories, difficulty, query) -> repo.getProblemsByStatus(page, user, status, query),
@@ -67,7 +64,7 @@ public class ProblemService implements IProblemService {
         User user = getLoggedInUser();
 
         Slice<Object[]> result = methods.get(getParamSum(status, difficulty, categories)).getProblems(pageable, user, status, categories, difficulty, query);
-        return result.map(converter::convert);
+        return result.map(mapper::objectArrayToProblemRow);
     }
 
     private int getParamSum(String status, ProblemDifficulty difficulty, List<Category> categories) {

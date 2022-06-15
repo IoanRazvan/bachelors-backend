@@ -7,7 +7,6 @@ import com.example.bachelorsbackend.mappers.UserListMapper;
 import com.example.bachelorsbackend.models.User;
 import com.example.bachelorsbackend.models.UserList;
 import com.example.bachelorsbackend.repositories.IUserListRepository;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,19 +17,17 @@ import static com.example.bachelorsbackend.services.ServiceUtils.getLoggedInUser
 @Service
 public class UserListService implements IUserListService {
     private final IUserListRepository repo;
-    private final Converter<Object[], UserListRowDTO> converter;
     private final UserListMapper mapper;
 
-    public UserListService(IUserListRepository repo, Converter<Object[], UserListRowDTO> converter, UserListMapper mapper) {
+    public UserListService(IUserListRepository repo, UserListMapper mapper) {
         this.repo = repo;
-        this.converter = converter;
         this.mapper = mapper;
     }
 
     @Override
     public List<UserListRowDTO> getLists(int problemId) {
         User user = getLoggedInUser();
-        return repo.findByUserAndProblemId(user, problemId).stream().map(converter::convert).collect(Collectors.toList());
+        return repo.findByUserAndProblemId(user, problemId).stream().map(mapper::objectArrayToUserListRow).collect(Collectors.toList());
     }
 
     @Override

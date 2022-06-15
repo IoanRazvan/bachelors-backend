@@ -8,9 +8,6 @@ import com.example.bachelorsbackend.models.ProblemTestcase;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Mapper(componentModel = "spring")
 public abstract class ProblemMapper {
     @Mapping(target="problemSolutions", source = "solutions")
@@ -24,25 +21,13 @@ public abstract class ProblemMapper {
     @Mapping(target = "problem", ignore = true)
     public abstract ProblemSolution problemSolutionDtoToEntity(ProblemSolutionDTO dto);
 
-    public abstract List<ProblemSolution> problemSolutionDtoToEntity(List<ProblemSolutionDTO> dto);
-
-    @Mapping(target="programmingLanguage", expression = "java(new com.example.bachelorsbackend.models.ProgrammingLanguage(dto.getLanguageId()))")
-    public abstract List<ProblemTestcase> problemTestcaseDtoToEntity(List<ProblemTestcaseDTO> dto);
-
     @Mapping(target="id", ignore = true)
     @Mapping(target="problem", ignore = true)
     public abstract ProblemTestcase problemTestcaseDtoToEntity(ProblemTestcaseDTO dto);
 
-    @Mapping(target="starters", expression = "java(convertSolutionsToStarters(problem.getProblemSolutions()))")
-    @Mapping(target="categories", source = "problemCategories")
+    @Mapping(target = "starters", expression = "java(problem.getProblemSolutions().stream().map(this::convertSolutionToStarter).collect(java.util.stream.Collectors.toList()))")
+    @Mapping(target = "categories", source = "problemCategories")
     public abstract ProblemResponseDTO problemEntityToResponseDto(Problem problem);
-
-    protected List<ProblemStarterDTO> convertSolutionsToStarters(List<ProblemSolution> solutions) {
-        List<ProblemStarterDTO> starters = new ArrayList<>();
-        for (ProblemSolution solution : solutions)
-            starters.add(convertSolutionToStarter(solution));
-        return starters;
-    }
 
     protected ProblemStarterDTO convertSolutionToStarter(ProblemSolution solution) {
         ProblemStarterDTO responseDTO = new ProblemStarterDTO();

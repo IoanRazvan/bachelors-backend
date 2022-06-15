@@ -14,7 +14,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequestMapping("api/category")
 public class CategoryController {
-    private ICategoryService service;
+    private final ICategoryService service;
 
     public CategoryController(ICategoryService service) {
         this.service = service;

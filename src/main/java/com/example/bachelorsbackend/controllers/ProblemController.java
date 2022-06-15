@@ -4,12 +4,9 @@ import com.example.bachelorsbackend.dtos.Page;
 import com.example.bachelorsbackend.dtos.PageFactory;
 import com.example.bachelorsbackend.dtos.ProblemResponseDTO;
 import com.example.bachelorsbackend.dtos.ProblemRowDTO;
-import com.example.bachelorsbackend.mappers.ProblemMapper;
 import com.example.bachelorsbackend.models.Category;
-import com.example.bachelorsbackend.models.Problem;
 import com.example.bachelorsbackend.models.ProblemDifficulty;
 import com.example.bachelorsbackend.services.IProblemService;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,13 +22,9 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping("api/problem")
 public class ProblemController {
     private final IProblemService service;
-    private final ProblemMapper mapper;
-    private final Converter<Object[], ProblemRowDTO> converter;
 
-    public ProblemController(IProblemService service, ProblemMapper mapper, Converter<Object[], ProblemRowDTO> converter) {
+    public ProblemController(IProblemService service) {
         this.service = service;
-        this.mapper = mapper;
-        this.converter = converter;
     }
 
     @GetMapping
@@ -50,13 +43,12 @@ public class ProblemController {
         parameters.put("difficulty", difficulty);
         parameters.put("categories", categories);
         parameters.put("query", query);
-        Slice<Object[]> problems = service.findProblems(page, size, status, difficulty, mappedCategories, query);
-        return PageFactory.of(problems, converter::convert, parameters);
+        Slice<ProblemRowDTO> problems = service.findProblems(page, size, status, difficulty, mappedCategories, query);
+        return PageFactory.of(problems, parameters);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<ProblemResponseDTO> getProblem(@PathVariable int id) {
-        Problem problem = service.findById(id);
-        return ok(mapper.problemEntityToResponseDto(problem));
+        return ok(service.findById(id));
     }
 }

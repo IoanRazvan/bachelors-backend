@@ -1,11 +1,15 @@
 package com.example.bachelorsbackend.services;
 
+import com.example.bachelorsbackend.dtos.ProblemResponseDTO;
+import com.example.bachelorsbackend.dtos.ProblemRowDTO;
+import com.example.bachelorsbackend.mappers.ProblemMapper;
 import com.example.bachelorsbackend.models.Category;
 import com.example.bachelorsbackend.models.Problem;
 import com.example.bachelorsbackend.models.ProblemDifficulty;
 import com.example.bachelorsbackend.models.User;
 import com.example.bachelorsbackend.repositories.IProblemRepository;
 import com.example.bachelorsbackend.services.exceptions.ResourceNotFoundException;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -19,6 +23,9 @@ import static com.example.bachelorsbackend.services.ServiceUtils.getLoggedInUser
 
 @Service
 public class ProblemService implements IProblemService {
+    private final ProblemMapper mapper;
+    private final Converter<Object[], ProblemRowDTO> converter;
+
     @FunctionalInterface
     private interface ProblemsFilteringQuery {
         Slice<Object[]> getProblems(Pageable page, User user, String status, List<Category> categories, ProblemDifficulty difficulty, String query);
@@ -27,8 +34,10 @@ public class ProblemService implements IProblemService {
     private final IProblemRepository repo;
     private final Map<Integer, ProblemsFilteringQuery> methods;
 
-    public ProblemService(IProblemRepository repo) {
+    public ProblemService(IProblemRepository repo, ProblemMapper mapper, Converter<Object[], ProblemRowDTO> converter) {
         this.repo = repo;
+        this.mapper = mapper;
+        this.converter = converter;
         this.methods = Map.of(
                 0, (page, user, status, categories, difficulty, query) -> repo.getProblems(page, user, query),
                 1, (page, user, status, categories, difficulty, query) -> repo.getProblemsByStatus(page, user, status, query),
@@ -47,20 +56,21 @@ public class ProblemService implements IProblemService {
     }
 
     @Override
-    public Problem findById(Integer id) {
+    public ProblemResponseDTO findById(Integer id) {
         Optional<Problem> problem = repo.findById(id);
-        return problem.orElseThrow(ResourceNotFoundException::new);
+        return mapper.problemEntityToResponseDto(problem.orElseThrow(ResourceNotFoundException::new));
     }
 
     @Override
-    public Slice<Object[]> findProblems(int page, int size, String status, ProblemDifficulty difficulty, List<Category> categories, String query) {
+    public Slice<ProblemRowDTO> findProblems(int page, int size, String status, ProblemDifficulty difficulty, List<Category> categories, String query) {
         Pageable pageable = PageRequest.of(page, size);
         User user = getLoggedInUser();
 
-        return methods.get(getParamSum(status, difficulty, categories)).getProblems(pageable, user, status, categories, difficulty, query);
+        Slice<Object[]> result = methods.get(getParamSum(status, difficulty, categories)).getProblems(pageable, user, status, categories, difficulty, query);
+        return result.map(converter::convert);
     }
 
-    public int getParamSum(String status, ProblemDifficulty difficulty, List<Category> categories) {
+    private int getParamSum(String status, ProblemDifficulty difficulty, List<Category> categories) {
         int sum = 0;
         if (status != null)
             sum += 1;

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/user-list-problem")
 public class UserListProblemController {
-    IUserListProblemService service;
+    private final IUserListProblemService service;
 
     public UserListProblemController(IUserListProblemService service) {
         this.service = service;

@@ -1,5 +1,7 @@
 package com.example.bachelorsbackend.services;
 
+import com.example.bachelorsbackend.dtos.ProblemResponseDTO;
+import com.example.bachelorsbackend.dtos.ProblemRowDTO;
 import com.example.bachelorsbackend.models.Category;
 import com.example.bachelorsbackend.models.Problem;
 import com.example.bachelorsbackend.models.ProblemDifficulty;
@@ -10,7 +12,7 @@ import java.util.List;
 public interface IProblemService {
     void save(Problem p);
 
-    Problem findById(Integer id);
+    ProblemResponseDTO findById(Integer id);
 
-    Slice<Object[]> findProblems(int page, int size, String status, ProblemDifficulty difficulty, List<Category> categories, String query);
+    Slice<ProblemRowDTO> findProblems(int page, int size, String status, ProblemDifficulty difficulty, List<Category> categories, String query);
 }

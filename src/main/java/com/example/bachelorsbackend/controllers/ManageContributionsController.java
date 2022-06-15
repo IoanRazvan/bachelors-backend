@@ -16,7 +16,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping("api/manage-contributions")
 @Secured("ROLE_DEVELOPER")
 public class ManageContributionsController {
-    IProblemContributionService contributionService;
+    private final IProblemContributionService contributionService;
 
 
     public ManageContributionsController(IProblemContributionService contributionService) {

@@ -28,8 +28,6 @@ public abstract class SubmissionMapper {
     @Mapping(target = "runtime", expression = "java(submission.getStatusCode() == 0 ? submission.getPassingSubmission().getRuntime() : -1)")
     public abstract SubmissionRowDTO submissionEntityToRowDto(Submission submission);
 
-    public abstract List<SubmissionRowDTO> submissionEntitiesToRowDTOs(List<Submission> submission);
-
     protected AcceptedSubmissionDistributionBin objectArrayToAcceptedBin(Object[] source) {
         AcceptedSubmissionDistributionBin target = new AcceptedSubmissionDistributionBin();
         target.setRuntime((Long) source[0]);

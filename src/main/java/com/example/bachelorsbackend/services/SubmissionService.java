@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.example.bachelorsbackend.services.ServiceUtils.getLoggedInUser;
 
@@ -29,7 +30,7 @@ public class SubmissionService implements ISubmissionService {
     public List<SubmissionRowDTO> findSubmissions(int problemId) {
         User user = getLoggedInUser();
         List<Submission> result = repo.findByUserAndProblemId(Sort.by(Sort.Direction.DESC, "timestamp"), user, problemId);
-        return mapper.submissionEntitiesToRowDTOs(result);
+        return result.stream().map(mapper::submissionEntityToRowDto).collect(Collectors.toList());
     }
 
     @Override

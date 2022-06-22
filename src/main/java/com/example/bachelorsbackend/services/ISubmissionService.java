@@ -1,8 +1,8 @@
 package com.example.bachelorsbackend.services;
 
-import com.example.bachelorsbackend.dtos.CodeRunnerResult;
-import com.example.bachelorsbackend.dtos.SubmissionDTO;
-import com.example.bachelorsbackend.dtos.SubmissionRowDTO;
+import com.example.bachelorsbackend.dtos.coderunner.CodeRunnerResult;
+import com.example.bachelorsbackend.dtos.submission.SubmissionDTO;
+import com.example.bachelorsbackend.dtos.submission.SubmissionRowDTO;
 
 import java.util.List;
 

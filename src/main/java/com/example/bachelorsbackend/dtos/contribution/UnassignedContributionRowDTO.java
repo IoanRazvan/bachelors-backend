@@ -1,14 +1,14 @@
-package com.example.bachelorsbackend.dtos;
+package com.example.bachelorsbackend.dtos.contribution;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class PreviousContributionRowDTO {
+public class UnassignedContributionRowDTO {
     public int id;
 
-    public String status;
+    public String contributorUsername;
 
     public String title;
 

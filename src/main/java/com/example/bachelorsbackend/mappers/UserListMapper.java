@@ -1,7 +1,7 @@
 package com.example.bachelorsbackend.mappers;
 
-import com.example.bachelorsbackend.dtos.UserListResponseDTO;
-import com.example.bachelorsbackend.dtos.UserListRowDTO;
+import com.example.bachelorsbackend.dtos.userlist.UserListResponseDTO;
+import com.example.bachelorsbackend.dtos.userlist.UserListRowDTO;
 import com.example.bachelorsbackend.models.UserList;
 import org.mapstruct.Mapper;
 

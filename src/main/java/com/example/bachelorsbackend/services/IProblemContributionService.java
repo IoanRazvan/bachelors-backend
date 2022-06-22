@@ -1,6 +1,7 @@
 package com.example.bachelorsbackend.services;
 
-import com.example.bachelorsbackend.dtos.*;
+import com.example.bachelorsbackend.dtos.contribution.*;
+import com.example.bachelorsbackend.dtos.problem.ProblemRequestDTO;
 import org.springframework.data.domain.Slice;
 
 import java.util.List;

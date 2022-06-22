@@ -1,6 +1,6 @@
 package com.example.bachelorsbackend.controllers;
 
-import com.example.bachelorsbackend.dtos.UserListProblemDTO;
+import com.example.bachelorsbackend.dtos.userlist.UserListProblemDTO;
 import com.example.bachelorsbackend.services.IUserListProblemService;
 import org.springframework.web.bind.annotation.*;
 

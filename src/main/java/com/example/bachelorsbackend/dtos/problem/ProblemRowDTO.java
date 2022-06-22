@@ -1,4 +1,4 @@
-package com.example.bachelorsbackend.dtos;
+package com.example.bachelorsbackend.dtos.problem;
 
 import com.example.bachelorsbackend.models.ProblemDifficulty;
 import lombok.Getter;

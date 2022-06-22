@@ -1,6 +1,6 @@
 package com.example.bachelorsbackend.mappers;
 
-import com.example.bachelorsbackend.dtos.*;
+import com.example.bachelorsbackend.dtos.contribution.*;
 import com.example.bachelorsbackend.models.ProblemContribution;
 import com.example.bachelorsbackend.models.ProblemContributionStatus;
 import org.mapstruct.Mapper;

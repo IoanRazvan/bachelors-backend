@@ -1,6 +1,6 @@
 package com.example.bachelorsbackend.mappers;
 
-import com.example.bachelorsbackend.dtos.UserListProblemDTO;
+import com.example.bachelorsbackend.dtos.userlist.UserListProblemDTO;
 import com.example.bachelorsbackend.models.UserListProblem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,6 +1,7 @@
 package com.example.bachelorsbackend.services;
 
-import com.example.bachelorsbackend.dtos.*;
+import com.example.bachelorsbackend.dtos.contribution.*;
+import com.example.bachelorsbackend.dtos.problem.ProblemRequestDTO;
 import com.example.bachelorsbackend.mappers.ProblemContributionMapper;
 import com.example.bachelorsbackend.mappers.ProblemMapper;
 import com.example.bachelorsbackend.models.ProblemContribution;

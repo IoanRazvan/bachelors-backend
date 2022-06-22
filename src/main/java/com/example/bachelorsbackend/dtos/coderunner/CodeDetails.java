@@ -1,4 +1,4 @@
-package com.example.bachelorsbackend.dtos;
+package com.example.bachelorsbackend.dtos.coderunner;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

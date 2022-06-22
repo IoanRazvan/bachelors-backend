@@ -1,12 +1,11 @@
-package com.example.bachelorsbackend.dtos;
+package com.example.bachelorsbackend.dtos.submission;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ProblemStarterDTO {
+public class SubmissionRequestDTO {
     private String languageId;
-    private String languageName;
     private String sourceCode;
 }

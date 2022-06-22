@@ -1,4 +1,4 @@
-package com.example.bachelorsbackend.dtos;
+package com.example.bachelorsbackend.dtos.problem;
 
 import com.example.bachelorsbackend.models.Category;
 import com.example.bachelorsbackend.models.ProblemDifficulty;
@@ -9,11 +9,12 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ProblemResponseDTO {
-    private int id;
+public class ProblemRequestDTO {
     private String title;
     private String description;
+    private List<ProblemSolutionDTO> solutions;
+    private List<ProblemTestcaseDTO> testcases;
     private ProblemDifficulty difficulty;
-    private List<ProblemStarterDTO> starters;
     private List<Category> categories;
+    private int contributionId;
 }

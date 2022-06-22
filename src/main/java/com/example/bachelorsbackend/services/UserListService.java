@@ -1,8 +1,8 @@
 package com.example.bachelorsbackend.services;
 
-import com.example.bachelorsbackend.dtos.UserListRequestDTO;
-import com.example.bachelorsbackend.dtos.UserListResponseDTO;
-import com.example.bachelorsbackend.dtos.UserListRowDTO;
+import com.example.bachelorsbackend.dtos.userlist.UserListRequestDTO;
+import com.example.bachelorsbackend.dtos.userlist.UserListResponseDTO;
+import com.example.bachelorsbackend.dtos.userlist.UserListRowDTO;
 import com.example.bachelorsbackend.mappers.UserListMapper;
 import com.example.bachelorsbackend.models.User;
 import com.example.bachelorsbackend.models.UserList;

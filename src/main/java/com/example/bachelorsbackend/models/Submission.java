@@ -1,6 +1,6 @@
 package com.example.bachelorsbackend.models;
 
-import com.example.bachelorsbackend.dtos.CodeRunnerResult;
+import com.example.bachelorsbackend.dtos.coderunner.CodeRunnerResult;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

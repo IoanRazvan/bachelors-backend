@@ -1,7 +1,7 @@
 package com.example.bachelorsbackend.controllers;
 
-import com.example.bachelorsbackend.dtos.SubmissionDTO;
-import com.example.bachelorsbackend.dtos.SubmissionRowDTO;
+import com.example.bachelorsbackend.dtos.submission.SubmissionDTO;
+import com.example.bachelorsbackend.dtos.submission.SubmissionRowDTO;
 import com.example.bachelorsbackend.services.ISubmissionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,9 +1,9 @@
 package com.example.bachelorsbackend.mappers;
 
-import com.example.bachelorsbackend.dtos.AcceptedSubmissionDistributionBin;
-import com.example.bachelorsbackend.dtos.FailedSubmissionDTO;
-import com.example.bachelorsbackend.dtos.PassingSubmissionDTO;
-import com.example.bachelorsbackend.dtos.SubmissionRowDTO;
+import com.example.bachelorsbackend.dtos.submission.AcceptedSubmissionDistributionBin;
+import com.example.bachelorsbackend.dtos.submission.FailedSubmissionDTO;
+import com.example.bachelorsbackend.dtos.submission.PassingSubmissionDTO;
+import com.example.bachelorsbackend.dtos.submission.SubmissionRowDTO;
 import com.example.bachelorsbackend.models.Submission;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

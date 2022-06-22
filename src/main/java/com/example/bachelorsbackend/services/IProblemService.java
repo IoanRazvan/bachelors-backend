@@ -1,7 +1,7 @@
 package com.example.bachelorsbackend.services;
 
-import com.example.bachelorsbackend.dtos.ProblemResponseDTO;
-import com.example.bachelorsbackend.dtos.ProblemRowDTO;
+import com.example.bachelorsbackend.dtos.problem.ProblemResponseDTO;
+import com.example.bachelorsbackend.dtos.problem.ProblemRowDTO;
 import com.example.bachelorsbackend.models.Category;
 import com.example.bachelorsbackend.models.Problem;
 import com.example.bachelorsbackend.models.ProblemDifficulty;

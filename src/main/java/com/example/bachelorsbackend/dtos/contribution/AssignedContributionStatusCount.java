@@ -1,4 +1,4 @@
-package com.example.bachelorsbackend.dtos;
+package com.example.bachelorsbackend.dtos.contribution;
 
 import com.example.bachelorsbackend.models.ProblemContributionStatus;
 import lombok.AllArgsConstructor;

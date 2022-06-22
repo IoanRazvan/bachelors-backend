@@ -1,7 +1,7 @@
 package com.example.bachelorsbackend.services;
 
-import com.example.bachelorsbackend.dtos.CodeDetails;
-import com.example.bachelorsbackend.dtos.CodeRunnerResult;
+import com.example.bachelorsbackend.dtos.coderunner.CodeDetails;
+import com.example.bachelorsbackend.dtos.coderunner.CodeRunnerResult;
 import com.example.bachelorsbackend.models.Problem;
 import com.example.bachelorsbackend.models.ProblemSolution;
 import com.example.bachelorsbackend.models.ProblemTestcase;

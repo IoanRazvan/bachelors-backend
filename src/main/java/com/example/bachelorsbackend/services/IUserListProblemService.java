@@ -1,6 +1,6 @@
 package com.example.bachelorsbackend.services;
 
-import com.example.bachelorsbackend.dtos.UserListProblemDTO;
+import com.example.bachelorsbackend.dtos.userlist.UserListProblemDTO;
 
 public interface IUserListProblemService {
     void save(UserListProblemDTO dto);

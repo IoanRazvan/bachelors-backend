@@ -1,9 +1,9 @@
 package com.example.bachelorsbackend.controllers;
 
-import com.example.bachelorsbackend.dtos.CodeDetails;
-import com.example.bachelorsbackend.dtos.CodeRunnerResult;
-import com.example.bachelorsbackend.dtos.SubmissionRequestDTO;
-import com.example.bachelorsbackend.dtos.SubmissionRowDTO;
+import com.example.bachelorsbackend.dtos.coderunner.CodeDetails;
+import com.example.bachelorsbackend.dtos.coderunner.CodeRunnerResult;
+import com.example.bachelorsbackend.dtos.submission.SubmissionRequestDTO;
+import com.example.bachelorsbackend.dtos.submission.SubmissionRowDTO;
 import com.example.bachelorsbackend.services.ICodeRunnerService;
 import com.example.bachelorsbackend.services.ISubmissionService;
 import org.springframework.http.ResponseEntity;

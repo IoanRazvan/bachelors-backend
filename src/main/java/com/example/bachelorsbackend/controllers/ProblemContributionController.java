@@ -1,6 +1,10 @@
 package com.example.bachelorsbackend.controllers;
 
-import com.example.bachelorsbackend.dtos.*;
+import com.example.bachelorsbackend.dtos.Page;
+import com.example.bachelorsbackend.dtos.PageFactory;
+import com.example.bachelorsbackend.dtos.contribution.PreviousContributionRowDTO;
+import com.example.bachelorsbackend.dtos.contribution.ProblemContributionRequestDTO;
+import com.example.bachelorsbackend.dtos.contribution.ProblemContributionResponseDTO;
 import com.example.bachelorsbackend.services.IProblemContributionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,6 +1,12 @@
 package com.example.bachelorsbackend.controllers;
 
-import com.example.bachelorsbackend.dtos.*;
+import com.example.bachelorsbackend.dtos.Page;
+import com.example.bachelorsbackend.dtos.PageFactory;
+import com.example.bachelorsbackend.dtos.contribution.AssignedContributionRowDTO;
+import com.example.bachelorsbackend.dtos.contribution.AssignedContributionStatusCount;
+import com.example.bachelorsbackend.dtos.contribution.ContributionRefusalDTO;
+import com.example.bachelorsbackend.dtos.contribution.UnassignedContributionRowDTO;
+import com.example.bachelorsbackend.dtos.problem.ProblemRequestDTO;
 import com.example.bachelorsbackend.services.IProblemContributionService;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;

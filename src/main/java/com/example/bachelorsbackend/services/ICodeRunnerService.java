@@ -1,7 +1,7 @@
 package com.example.bachelorsbackend.services;
 
-import com.example.bachelorsbackend.dtos.CodeDetails;
-import com.example.bachelorsbackend.dtos.CodeRunnerResult;
+import com.example.bachelorsbackend.dtos.coderunner.CodeDetails;
+import com.example.bachelorsbackend.dtos.coderunner.CodeRunnerResult;
 
 import java.io.IOException;
 import java.util.List;

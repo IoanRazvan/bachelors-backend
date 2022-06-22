@@ -1,6 +1,6 @@
 package com.example.bachelorsbackend.services;
 
-import com.example.bachelorsbackend.dtos.UserListProblemDTO;
+import com.example.bachelorsbackend.dtos.userlist.UserListProblemDTO;
 import com.example.bachelorsbackend.mappers.UserListProblemMapper;
 import com.example.bachelorsbackend.models.User;
 import com.example.bachelorsbackend.models.UserList;

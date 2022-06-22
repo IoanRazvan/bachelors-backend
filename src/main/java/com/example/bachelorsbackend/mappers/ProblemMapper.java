@@ -1,6 +1,6 @@
 package com.example.bachelorsbackend.mappers;
 
-import com.example.bachelorsbackend.dtos.*;
+import com.example.bachelorsbackend.dtos.problem.*;
 import com.example.bachelorsbackend.models.Problem;
 import com.example.bachelorsbackend.models.ProblemDifficulty;
 import com.example.bachelorsbackend.models.ProblemSolution;

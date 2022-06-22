@@ -1,4 +1,4 @@
-package com.example.bachelorsbackend.dtos;
+package com.example.bachelorsbackend.dtos.userlist;
 
 import lombok.Getter;
 import lombok.Setter;

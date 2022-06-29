@@ -47,4 +47,6 @@ public abstract class ProblemMapper {
         target.setStatus((String) source[3]);
         return target;
     }
+
+    public abstract ListProblemDTO entityToUserListDTO(Problem p);
 }

@@ -12,4 +12,6 @@ public interface IUserListRepository extends CrudRepository<UserList, Integer> {
             "from UserList ul left join UserListProblem ulp on (ul = ulp.userList and ulp.problem.id = ?2) " +
             "where ul.user = ?1")
     List<Object[]> findByUserAndProblemId(User owner, int problemId);
+
+    List<UserList> findByUser(User user);
 }

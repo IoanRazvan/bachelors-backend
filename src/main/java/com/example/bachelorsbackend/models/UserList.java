@@ -19,7 +19,7 @@ public class UserList {
     @ManyToOne
     private User user;
 
-    @OneToMany(mappedBy = "problem")
+    @OneToMany(mappedBy = "userList", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<UserListProblem> userListProblems;
 
     public UserList(int id) {

@@ -10,4 +10,10 @@ public interface IUserListService {
     List<UserListRowDTO> getLists(int problemId);
 
     UserListResponseDTO save(UserListRequestDTO list);
+
+    UserListResponseDTO update(int id, UserListRequestDTO list);
+
+    List<UserListResponseDTO> getAll();
+
+    void delete(int id);
 }

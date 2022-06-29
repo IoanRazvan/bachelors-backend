@@ -9,6 +9,7 @@ import com.example.bachelorsbackend.models.UserList;
 import com.example.bachelorsbackend.repositories.IUserListRepository;
 import org.springframework.stereotype.Service;
 
+import java.lang.module.ResolutionException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,4 +38,26 @@ public class UserListService implements IUserListService {
         entity.setListTitle(list.getListTitle());
         return mapper.entityToResponseDTO(repo.save(entity));
     }
+
+    @Override
+    public UserListResponseDTO update(int id, UserListRequestDTO list) {
+        UserList entity = repo.findById(id).orElseThrow(ResolutionException::new);
+        entity.setListTitle(list.getListTitle());
+        return mapper.entityToResponseDTO(repo.save(entity));
+    }
+
+    @Override
+    public List<UserListResponseDTO> getAll() {
+        User user = getLoggedInUser();
+        return repo.findByUser(user).stream()
+                .map(mapper::entityToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void delete(int id) {
+        repo.deleteById(id);
+    }
+
+
 }

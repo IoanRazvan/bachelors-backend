@@ -20,7 +20,7 @@ public class UserListController {
         this.service = service;
     }
 
-    @GetMapping("{id}")
+    @GetMapping("problem/{id}")
     public ResponseEntity<List<UserListRowDTO>> getLists(@PathVariable int id) {
         return ok(service.getLists(id));
     }
@@ -29,4 +29,20 @@ public class UserListController {
     public ResponseEntity<UserListResponseDTO> saveList(@RequestBody UserListRequestDTO list) {
         return ok(service.save(list));
     }
+
+    @PutMapping("{id}")
+    public ResponseEntity<UserListResponseDTO> updateList(@PathVariable int id, @RequestBody UserListRequestDTO list) {
+        return ok(service.update(id, list));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserListResponseDTO>> getLists() {
+        return ok(service.getAll());
+    }
+
+    @DeleteMapping("{id}")
+    public void deleteList(@PathVariable int id) {
+        service.delete(id);
+    }
+
 }

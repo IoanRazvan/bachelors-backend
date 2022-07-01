@@ -2,6 +2,7 @@ package com.example.bachelorsbackend.services;
 
 import com.example.bachelorsbackend.dtos.coderunner.CodeRunnerResult;
 import com.example.bachelorsbackend.dtos.submission.SubmissionDTO;
+import com.example.bachelorsbackend.dtos.submission.SubmissionDateCountDTO;
 import com.example.bachelorsbackend.dtos.submission.SubmissionRowDTO;
 import com.example.bachelorsbackend.mappers.SubmissionMapper;
 import com.example.bachelorsbackend.models.Submission;
@@ -48,5 +49,12 @@ public class SubmissionService implements ISubmissionService {
             return mapper.passingSubmissionEntityToDto(s, bins);
         }
         return mapper.failedSubmissionEntityToDto(s);
+    }
+
+    @Override
+    public List<SubmissionDateCountDTO> getSubmissionsDateCount() {
+        User u = getLoggedInUser();
+        List<Object[]> rows = repo.getSubmissionsCount(u.getSubject());
+        return rows.stream().map(mapper::objectArrayToSubmissionDateCount).collect(Collectors.toList());
     }
 }

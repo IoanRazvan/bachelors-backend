@@ -84,4 +84,19 @@ public interface IProblemRepository extends CrudRepository<Problem, Integer> {
             "end from ProgrammingLanguage) and " +
             "not exists (select 1 from Category c where c in ?2 and not exists (select 1 from p.problemCategories pc where pc = c))")
     Slice<Object[]> getProblemsByCategoriesAndStatusAndDifficulty(Pageable page, User user, List<Category> categories, String status, ProblemDifficulty difficulty, String query);
+
+    @Query(value = "select p.difficulty, count(*) " +
+            "from Problem p " +
+            "group by p.difficulty", nativeQuery = true)
+    List<Object[]> countProblemsGroupByDifficulty();
+
+    @Query(value = "select difficulty, count(*) " +
+            "from ( " +
+            "   select distinct S.PROBLEM_ID id, P.DIFFICULTY difficulty" +
+            "   from SUBMISSION S " +
+            "   join PROBLEM P on S.PROBLEM_ID = P.ID " +
+            "   where STATUS_CODE = 0 and USER_SUBJECT = ?1 " +
+            ") " +
+            "group by difficulty", nativeQuery = true)
+    List<Object[]> countProblemsSolvedGroupByDifficulty(String userSubject);
 }

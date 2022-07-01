@@ -4,6 +4,7 @@ import com.example.bachelorsbackend.dtos.Page;
 import com.example.bachelorsbackend.dtos.PageFactory;
 import com.example.bachelorsbackend.dtos.problem.ProblemResponseDTO;
 import com.example.bachelorsbackend.dtos.problem.ProblemRowDTO;
+import com.example.bachelorsbackend.dtos.problem.SolvedProblemsStatsDTO;
 import com.example.bachelorsbackend.models.Category;
 import com.example.bachelorsbackend.models.ProblemDifficulty;
 import com.example.bachelorsbackend.services.IProblemService;
@@ -50,5 +51,10 @@ public class ProblemController {
     @GetMapping("{id}")
     public ResponseEntity<ProblemResponseDTO> getProblem(@PathVariable int id) {
         return ok(service.findById(id));
+    }
+
+    @GetMapping("stats")
+    public ResponseEntity<SolvedProblemsStatsDTO> getSolvedProblemsStats() {
+        return ok(service.getSolvedProblemsStats());
     }
 }

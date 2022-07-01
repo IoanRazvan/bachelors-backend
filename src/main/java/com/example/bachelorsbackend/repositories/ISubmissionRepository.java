@@ -17,4 +17,10 @@ public interface ISubmissionRepository extends CrudRepository<Submission, Intege
             "group by ps.runtime " +
             "order by 1 asc")
     List<Object[]> getDistribution(int problemId, String languageId);
+
+    @Query(value = "select to_char(s.timestamp, 'MM/DD/YYYY'), count(s.id) " +
+            "from Submission  s " +
+            "where s.user_subject = ?1 and to_char(current_date, 'YYYY') = to_char(s.timestamp, 'YYYY')" +
+            "group by to_char(s.timestamp, 'MM/DD/YYYY')", nativeQuery = true)
+    List<Object[]> getSubmissionsCount(String userId);
 }

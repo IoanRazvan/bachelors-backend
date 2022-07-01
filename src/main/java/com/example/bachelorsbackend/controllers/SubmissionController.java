@@ -1,6 +1,7 @@
 package com.example.bachelorsbackend.controllers;
 
 import com.example.bachelorsbackend.dtos.submission.SubmissionDTO;
+import com.example.bachelorsbackend.dtos.submission.SubmissionDateCountDTO;
 import com.example.bachelorsbackend.dtos.submission.SubmissionRowDTO;
 import com.example.bachelorsbackend.services.ISubmissionService;
 import org.springframework.http.ResponseEntity;
@@ -31,5 +32,10 @@ public class SubmissionController {
     public ResponseEntity<SubmissionDTO> getSubmission(@PathVariable int id) {
         SubmissionDTO submission = service.getSubmissionDetails(id);
         return ok(submission);
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<List<SubmissionDateCountDTO>> getSubmissionsDateCount() {
+        return ok(service.getSubmissionsDateCount());
     }
 }

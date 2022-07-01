@@ -13,7 +13,6 @@ import com.example.bachelorsbackend.services.exceptions.AccessDeniedException;
 import com.example.bachelorsbackend.services.exceptions.InvalidOperationException;
 import com.example.bachelorsbackend.services.exceptions.ResourceNotFoundException;
 import org.hibernate.StaleStateException;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -60,9 +59,15 @@ public class ProblemContributionService implements IProblemContributionService {
             throw new InvalidOperationException(UPDATE_NON_PENDING_CONTRIBUTION_ERROR);
 
         User user = getLoggedInUser();
-        if (oldContribution.getContributor().equals(user))
+        if (!oldContribution.getContributor().equals(user))
             throw new AccessDeniedException();
-        BeanUtils.copyProperties(oldContribution, newContribution);
+//        BeanUtils.copyProperties(oldContribution, newContribution);
+        oldContribution.setTitle(newContribution.getTitle());
+        oldContribution.setDescription(newContribution.getDescription());
+        oldContribution.setSolution(newContribution.getSolution());
+        oldContribution.setTestcase(newContribution.getTestcase());
+//        System.out.println(oldContribution.getDescription());
+
         return contributionMapper.entityToDTO(repo.save(oldContribution));
     }
 

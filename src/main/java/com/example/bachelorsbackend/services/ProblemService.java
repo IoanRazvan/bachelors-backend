@@ -2,6 +2,7 @@ package com.example.bachelorsbackend.services;
 
 import com.example.bachelorsbackend.dtos.problem.ProblemResponseDTO;
 import com.example.bachelorsbackend.dtos.problem.ProblemRowDTO;
+import com.example.bachelorsbackend.dtos.problem.SolvedProblemsStatsDTO;
 import com.example.bachelorsbackend.mappers.ProblemMapper;
 import com.example.bachelorsbackend.models.Category;
 import com.example.bachelorsbackend.models.Problem;
@@ -65,6 +66,14 @@ public class ProblemService implements IProblemService {
 
         Slice<Object[]> result = methods.get(getParamSum(status, difficulty, categories)).getProblems(pageable, user, status, categories, difficulty, query);
         return result.map(mapper::objectArrayToProblemRow);
+    }
+
+    @Override
+    public SolvedProblemsStatsDTO getSolvedProblemsStats() {
+        User u = getLoggedInUser();
+        List<Object[]> total = repo.countProblemsGroupByDifficulty();
+        List<Object[]> solved = repo.countProblemsSolvedGroupByDifficulty(u.getSubject());
+        return mapper.statsListsToSolvedProblemStats(total, solved);
     }
 
     private int getParamSum(String status, ProblemDifficulty difficulty, List<Category> categories) {

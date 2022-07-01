@@ -1,13 +1,11 @@
 package com.example.bachelorsbackend.mappers;
 
-import com.example.bachelorsbackend.dtos.submission.AcceptedSubmissionDistributionBin;
-import com.example.bachelorsbackend.dtos.submission.FailedSubmissionDTO;
-import com.example.bachelorsbackend.dtos.submission.PassingSubmissionDTO;
-import com.example.bachelorsbackend.dtos.submission.SubmissionRowDTO;
+import com.example.bachelorsbackend.dtos.submission.*;
 import com.example.bachelorsbackend.models.Submission;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -32,6 +30,13 @@ public abstract class SubmissionMapper {
         AcceptedSubmissionDistributionBin target = new AcceptedSubmissionDistributionBin();
         target.setRuntime((Long) source[0]);
         target.setCount((Long) source[1]);
+        return target;
+    }
+
+    public SubmissionDateCountDTO objectArrayToSubmissionDateCount(Object[] source) {
+        SubmissionDateCountDTO target = new SubmissionDateCountDTO();
+        target.setDate((String) source[0]);
+        target.setCount((BigDecimal) source[1]);
         return target;
     }
 }

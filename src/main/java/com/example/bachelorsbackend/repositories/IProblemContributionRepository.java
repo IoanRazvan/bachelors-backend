@@ -8,8 +8,10 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
+@Transactional
 public interface IProblemContributionRepository extends CrudRepository<ProblemContribution, Integer> {
     Slice<ProblemContribution> findByContributor(Pageable pageable, User contributor);
     @Query("select pc from ProblemContribution pc where pc.contributor <> ?1 and pc.status = 'PENDING' and pc.assignedTo is null and lower(pc.title) like concat('%', lower(?2), '%')")

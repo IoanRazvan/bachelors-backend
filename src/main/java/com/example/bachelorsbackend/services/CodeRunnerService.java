@@ -21,9 +21,9 @@ import java.util.concurrent.Future;
 
 @Service
 public class CodeRunnerService implements ICodeRunnerService {
-    private ObjectMapper mapper;
-    private ExecutorService executorService;
-    private IProblemRepository problemRepository;
+    final private ObjectMapper mapper;
+    final private ExecutorService executorService;
+    final private IProblemRepository problemRepository;
 
     public CodeRunnerService(IProblemRepository problemRepository) {
         mapper = new ObjectMapper();
